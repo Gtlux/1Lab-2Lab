@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.OrderDialogController" prefWidth="700" prefHeight="600">
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Client -->
+            <VBox fx:id="clientBox" spacing="5">
+                <Label text="Klientas: *"/>
+                <ComboBox fx:id="clientComboBox" promptText="Pasirinkite klientą" maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Restaurant -->
+            <VBox spacing="5">
+                <Label text="Restoranas: *"/>
+                <ComboBox fx:id="restaurantComboBox" promptText="Pasirinkite restoraną" maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Delivery Address -->
+            <VBox spacing="5">
+                <Label text="Pristatymo adresas: *"/>
+                <TextField fx:id="deliveryAddressField" promptText="Įveskite pristatymo adresą"/>
+            </VBox>
+
+            <!-- Notes -->
+            <VBox spacing="5">
+                <Label text="Pastabos:"/>
+                <TextArea fx:id="notesArea" promptText="Papildomos pastabos" prefRowCount="2"/>
+            </VBox>
+
+            <!-- Menu Items Section -->
+            <VBox spacing="10">
+                <Label text="Užsakymo elementai:" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+                <!-- Add Item Section -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="menuItemComboBox" promptText="Pasirinkite patiekalą" prefWidth="250"/>
+                    <TextField fx:id="quantityField" promptText="Kiekis" prefWidth="80"/>
+                    <Button text="Pridėti" onAction="#handleAddItem" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                </HBox>
+
+                <!-- Order Items Table -->
+                <TableView fx:id="orderItemsTable" prefHeight="200">
+                    <columns>
+                        <TableColumn fx:id="itemNameColumn" text="Pavadinimas" prefWidth="200"/>
+                        <TableColumn fx:id="itemPriceColumn" text="Kaina (€)" prefWidth="100"/>
+                        <TableColumn fx:id="itemQuantityColumn" text="Kiekis" prefWidth="100"/>
+                        <TableColumn fx:id="itemSubtotalColumn" text="Suma (€)" prefWidth="100"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Šalinti pasirinktą" onAction="#handleRemoveItem" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Iš viso:" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                    <Label fx:id="totalLabel" text="0.00 €" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Buttons -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Išsaugoti" onAction="#handleSave" prefWidth="100" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button text="Atšaukti" onAction="#handleCancel" prefWidth="100" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

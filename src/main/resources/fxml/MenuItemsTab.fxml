@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.MenuItemsTabController" spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Title and Buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Meniu valdymas" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Pridėti naują" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Redaguoti" onAction="#handleEdit" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Ištrinti" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Filter Section -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Filtruoti pagal restoraną:"/>
+        <ComboBox fx:id="restaurantFilterComboBox" promptText="Visi restoranai" prefWidth="200"/>
+        <Button text="Taikyti filtrą" onAction="#handleFilter" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+        <Button text="Išvalyti filtrą" onAction="#handleClearFilter" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Table -->
+    <TableView fx:id="menuItemsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nameColumn" text="Pavadinimas" prefWidth="150"/>
+            <TableColumn fx:id="descriptionColumn" text="Aprašymas" prefWidth="200"/>
+            <TableColumn fx:id="priceColumn" text="Kaina (€)" prefWidth="100"/>
+            <TableColumn fx:id="categoryColumn" text="Kategorija" prefWidth="120"/>
+            <TableColumn fx:id="restaurantColumn" text="Restoranas" prefWidth="150"/>
+            <TableColumn fx:id="availableColumn" text="Prieinamas" prefWidth="100"/>
+        </columns>
+    </TableView>
+</VBox>

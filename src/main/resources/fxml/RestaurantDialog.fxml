@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.RestaurantDialogController" spacing="15" style="-fx-padding: 20;">
+
+    <!-- Name -->
+    <VBox spacing="5">
+        <Label text="Pavadinimas: *"/>
+        <TextField fx:id="nameField" promptText="Įveskite restorano pavadinimą"/>
+    </VBox>
+
+    <!-- Address -->
+    <VBox spacing="5">
+        <Label text="Adresas: *"/>
+        <TextField fx:id="addressField" promptText="Įveskite adresą"/>
+    </VBox>
+
+    <!-- Phone -->
+    <VBox spacing="5">
+        <Label text="Telefono numeris: *"/>
+        <TextField fx:id="phoneField" promptText="+370..."/>
+    </VBox>
+
+    <!-- Email -->
+    <VBox spacing="5">
+        <Label text="El. paštas: *"/>
+        <TextField fx:id="emailField" promptText="Įveskite el. paštą"/>
+    </VBox>
+
+    <!-- Description -->
+    <VBox spacing="5">
+        <Label text="Aprašymas:"/>
+        <TextArea fx:id="descriptionArea" promptText="Įveskite aprašymą" prefRowCount="3"/>
+    </VBox>
+
+    <!-- Owner (only for admin) -->
+    <VBox fx:id="ownerBox" spacing="5">
+        <Label text="Savininkas: *"/>
+        <ComboBox fx:id="ownerComboBox" promptText="Pasirinkite savininką" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- Active -->
+    <CheckBox fx:id="activeCheckBox" text="Aktyvus" selected="true"/>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Išsaugoti" onAction="#handleSave" prefWidth="100" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Atšaukti" onAction="#handleCancel" prefWidth="100" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

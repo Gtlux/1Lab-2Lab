@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.OrdersTabController" spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Title and Buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Užsakymų valdymas" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Naujas užsakymas" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Peržiūrėti" onAction="#handleView" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Keisti statusą" onAction="#handleChangeStatus" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+        <Button text="Ištrinti" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Table -->
+    <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="clientColumn" text="Klientas" prefWidth="120"/>
+            <TableColumn fx:id="restaurantColumn" text="Restoranas" prefWidth="120"/>
+            <TableColumn fx:id="driverColumn" text="Vairuotojas" prefWidth="120"/>
+            <TableColumn fx:id="statusColumn" text="Statusas" prefWidth="120"/>
+            <TableColumn fx:id="totalAmountColumn" text="Suma (€)" prefWidth="100"/>
+            <TableColumn fx:id="deliveryAddressColumn" text="Pristatymo adresas" prefWidth="200"/>
+            <TableColumn fx:id="createdAtColumn" text="Sukurta" prefWidth="150"/>
+        </columns>
+    </TableView>
+</VBox>

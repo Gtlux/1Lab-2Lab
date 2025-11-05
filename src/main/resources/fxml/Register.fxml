@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.RegisterController">
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #f5f5f5;">
+            <VBox alignment="CENTER" spacing="20" style="-fx-background-color: #f5f5f5;">
+                <padding>
+                    <Insets bottom="40" left="40" right="40" top="40"/>
+                </padding>
+
+                <!-- Title -->
+                <Label text="Registracija">
+                    <font>
+                        <Font name="System Bold" size="24"/>
+                    </font>
+                </Label>
+
+                <!-- Registration Form -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
+
+                    <!-- Username -->
+                    <VBox spacing="5">
+                        <Label text="Vartotojo vardas: *"/>
+                        <TextField fx:id="usernameField" promptText="Įveskite vartotojo vardą" prefHeight="35"/>
+                    </VBox>
+
+                    <!-- Password -->
+                    <VBox spacing="5">
+                        <Label text="Slaptažodis: * (min. 6 simboliai)"/>
+                        <PasswordField fx:id="passwordField" promptText="Įveskite slaptažodį" prefHeight="35"/>
+                    </VBox>
+
+                    <!-- Confirm Password -->
+                    <VBox spacing="5">
+                        <Label text="Patvirtinti slaptažodį: *"/>
+                        <PasswordField fx:id="confirmPasswordField" promptText="Pakartokite slaptažodį" prefHeight="35"/>
+                    </VBox>
+
+                    <!-- Email -->
+                    <VBox spacing="5">
+                        <Label text="El. paštas: *"/>
+                        <TextField fx:id="emailField" promptText="Įveskite el. paštą" prefHeight="35"/>
+                    </VBox>
+
+                    <!-- Full Name -->
+                    <VBox spacing="5">
+                        <Label text="Pilnas vardas: *"/>
+                        <TextField fx:id="fullNameField" promptText="Įveskite pilną vardą" prefHeight="35"/>
+                    </VBox>
+
+                    <!-- Phone -->
+                    <VBox spacing="5">
+                        <Label text="Telefono numeris: *"/>
+                        <TextField fx:id="phoneField" promptText="+370..." prefHeight="35"/>
+                    </VBox>
+
+                    <!-- Role -->
+                    <VBox spacing="5">
+                        <Label text="Vartotojo tipas: *"/>
+                        <ComboBox fx:id="roleComboBox" promptText="Pasirinkite vartotojo tipą" prefHeight="35" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <!-- Buttons -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button text="Registruotis" onAction="#handleRegister" prefWidth="120" prefHeight="35" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <Button text="Atgal" onAction="#handleBack" prefWidth="120" prefHeight="35" style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <Label text="* - privalomi laukai" style="-fx-font-size: 10; -fx-text-fill: gray;"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

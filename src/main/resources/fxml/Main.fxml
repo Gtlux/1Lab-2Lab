@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.MainController">
+    <top>
+        <!-- Menu Bar -->
+        <VBox>
+            <MenuBar>
+                <Menu text="Sistema">
+                    <MenuItem text="Atsijungti" onAction="#handleLogout"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Išeiti" onAction="#handleExit"/>
+                </Menu>
+                <Menu text="Pagalba">
+                    <MenuItem text="Apie programą" onAction="#handleAbout"/>
+                </Menu>
+            </MenuBar>
+
+            <!-- User Info Bar -->
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #2196F3; -fx-padding: 10;">
+                <Label fx:id="userInfoLabel" text="Prisijungęs: " style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="roleLabel" text="Rolė: " style="-fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <!-- Tab Pane -->
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
+            <!-- Tabs will be dynamically added based on user role -->
+        </TabPane>
+    </center>
+</BorderPane>

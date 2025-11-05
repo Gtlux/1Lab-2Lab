@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.MenuItemDialogController" spacing="15" style="-fx-padding: 20;">
+
+    <!-- Restaurant -->
+    <VBox fx:id="restaurantBox" spacing="5">
+        <Label text="Restoranas: *"/>
+        <ComboBox fx:id="restaurantComboBox" promptText="Pasirinkite restoraną" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- Name -->
+    <VBox spacing="5">
+        <Label text="Pavadinimas: *"/>
+        <TextField fx:id="nameField" promptText="Įveskite patiekalo pavadinimą"/>
+    </VBox>
+
+    <!-- Description -->
+    <VBox spacing="5">
+        <Label text="Aprašymas:"/>
+        <TextArea fx:id="descriptionArea" promptText="Įveskite aprašymą" prefRowCount="3"/>
+    </VBox>
+
+    <!-- Price -->
+    <VBox spacing="5">
+        <Label text="Kaina (€): *"/>
+        <TextField fx:id="priceField" promptText="0.00"/>
+    </VBox>
+
+    <!-- Category -->
+    <VBox spacing="5">
+        <Label text="Kategorija: *"/>
+        <TextField fx:id="categoryField" promptText="pvz., Pica, Suši, Desertai"/>
+    </VBox>
+
+    <!-- Available -->
+    <CheckBox fx:id="availableCheckBox" text="Prieinamas" selected="true"/>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Išsaugoti" onAction="#handleSave" prefWidth="100" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Atšaukti" onAction="#handleCancel" prefWidth="100" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>
