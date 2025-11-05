@@ -34,6 +34,24 @@ Maisto užsakymo ir pristatymo valdymo sistema, sukurta naudojant Java, JavaFX i
 
 ---
 
+## 🔐 Vartotojų Teisės
+
+> **📖 Pilna informacija**: [TEISIU_HIERARCHIJA.md](TEISIU_HIERARCHIJA.md)
+
+| Rolė | Matomi Tab'ai | Pridėti Restoraną | Valdyti Meniu | Kurti Užsakymus |
+|------|--------------|-------------------|---------------|-----------------|
+| **Admin** | Visi (4) | ✅ | ✅ (visi) | ✅ |
+| **Savininkas** | 3 tabs | ❌ | ✅ (savo) | ❌ |
+| **Vairuotojas** | Užsakymai | ❌ | ❌ | ❌ |
+| **Klientas** | Užsakymai | ❌ | ❌ | ✅ |
+
+**Svarbu:**
+- ❌ Tik **administratoriai** gali pridėti/ištrinti restoranus
+- ✅ Savininkai gali **tik redaguoti** savo restoraną
+- ❌ Klientai **nemato** Restoranų/Meniu valdymo
+
+---
+
 ## Projekto Struktūra
 
 ```
