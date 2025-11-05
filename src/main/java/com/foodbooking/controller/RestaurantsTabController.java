@@ -51,6 +51,9 @@ public class RestaurantsTabController implements Initializable {
     @FXML
     private Button addButton;
 
+    @FXML
+    private Button deleteButton;
+
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
     private ObservableList<Restaurant> restaurantsList = FXCollections.observableArrayList();
 
@@ -65,11 +68,13 @@ public class RestaurantsTabController implements Initializable {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
 
-        // Hide "Add" button for non-administrators
-        // Only administrators can add new restaurants
+        // Hide "Add" and "Delete" buttons for non-administrators
+        // Only administrators can add new restaurants or delete them
         if (!SessionManager.getInstance().isAdministrator()) {
             addButton.setVisible(false);
             addButton.setManaged(false);
+            deleteButton.setVisible(false);
+            deleteButton.setManaged(false);
         }
 
         // Load data
@@ -166,16 +171,15 @@ public class RestaurantsTabController implements Initializable {
 
     @FXML
     private void handleDelete() {
-        Restaurant selected = restaurantsTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            AlertHelper.showWarning("Įspėjimas", "Pasirinkite restoraną šalinimui!");
+        // Only administrators can delete restaurants
+        if (!SessionManager.getInstance().isAdministrator()) {
+            AlertHelper.showError("Klaida", "Tik administratoriai gali ištrinti restoranus!");
             return;
         }
 
-        // Restaurant owners can only delete their own restaurants
-        if (SessionManager.getInstance().isRestaurantOwner() &&
-            !selected.getOwnerId().equals(SessionManager.getInstance().getCurrentUser().getId())) {
-            AlertHelper.showError("Klaida", "Galite ištrinti tik savo restoraną!");
+        Restaurant selected = restaurantsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showWarning("Įspėjimas", "Pasirinkite restoraną šalinimui!");
             return;
         }
 
