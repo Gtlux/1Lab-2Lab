@@ -360,7 +360,7 @@ public class MenuItemsTabController implements Initializable {
             String selectedAvailability = availabilityFilterComboBox.getValue();
             if (selectedAvailability != null && !selectedAvailability.equals("Visi")) {
                 boolean available = selectedAvailability.equals("Prieinami");
-                filteredItems.removeIf(item -> item.getAvailable() != available);
+                filteredItems.removeIf(item -> item.isAvailable() != available);
             }
 
             // Filter by name
@@ -425,7 +425,7 @@ public class MenuItemsTabController implements Initializable {
             return;
         }
 
-        if (!selected.getAvailable()) {
+        if (!selected.isAvailable()) {
             AlertHelper.showError("Klaida", "Šis patiekalas šiuo metu neprieinamas!");
             return;
         }
