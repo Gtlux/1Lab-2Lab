@@ -9,6 +9,11 @@
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
+    <!-- Define ToggleGroup -->
+    <fx:define>
+        <ToggleGroup fx:id="statusFilter"/>
+    </fx:define>
+
     <!-- Title and Buttons -->
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Atšaukimo užklausos" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
@@ -16,14 +21,15 @@
         <Button text="Patvirtinti" onAction="#handleApprove" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
         <Button text="Atmesti" onAction="#handleReject" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
         <Button text="Peržiūrėti" onAction="#handleView" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Ištrinti" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
         <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
     </HBox>
 
     <!-- Filter -->
     <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #F5F5F5; -fx-padding: 10; -fx-background-radius: 5;">
         <Label text="Rodyti:"/>
-        <RadioButton fx:id="pendingRadio" text="Laukiančios" selected="true" toggleGroup="statusFilter"/>
-        <RadioButton fx:id="allRadio" text="Visos" toggleGroup="statusFilter"/>
+        <RadioButton fx:id="pendingRadio" text="Laukiančios" selected="true" toggleGroup="$statusFilter"/>
+        <RadioButton fx:id="allRadio" text="Visos" toggleGroup="$statusFilter"/>
     </HBox>
 
     <!-- Table -->

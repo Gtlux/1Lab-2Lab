@@ -251,6 +251,42 @@ public class CancellationRequestsTabController implements Initializable {
     }
 
     @FXML
+    private void handleDelete() {
+        CancellationRequest selected = requestsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showWarning("Įspėjimas", "Pasirinkite užklausą šalinimui!");
+            return;
+        }
+
+        // Only allow deletion of approved or rejected requests
+        if (selected.getStatus() == CancellationStatus.PENDING) {
+            AlertHelper.showWarning("Įspėjimas",
+                "Negalima ištrinti laukiančios užklausos!\n\n" +
+                "Pirmiausia patvirtinkite arba atmeskite užklausą.");
+            return;
+        }
+
+        if (AlertHelper.showConfirmation("Patvirtinimas",
+                String.format("Ar tikrai norite ištrinti užklausą #%d?\n\n" +
+                    "Užsakymas: #%d\nStatusas: %s",
+                    selected.getId(), selected.getOrderId(),
+                    selected.getStatus().getDisplayName()))) {
+
+            try {
+                if (cancellationRequestDAO.deleteCancellationRequest(selected.getId())) {
+                    AlertHelper.showSuccess("Sėkmė", "Užklausa sėkmingai ištrinta!");
+                    loadRequests();
+                } else {
+                    AlertHelper.showError("Klaida", "Nepavyko ištrinti užklausos!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                AlertHelper.showError("Klaida", "Šalinimo klaida: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
     private void handleRefresh() {
         loadRequests();
     }

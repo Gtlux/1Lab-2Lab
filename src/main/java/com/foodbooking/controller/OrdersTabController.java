@@ -3,10 +3,13 @@ package com.foodbooking.controller;
 import com.foodbooking.dao.CancellationRequestDAO;
 import com.foodbooking.dao.OrderDAO;
 import com.foodbooking.dao.RestaurantDAO;
+import com.foodbooking.dao.UserDAO;
 import com.foodbooking.model.CancellationRequest;
 import com.foodbooking.model.Order;
 import com.foodbooking.model.OrderStatus;
 import com.foodbooking.model.Restaurant;
+import com.foodbooking.model.User;
+import com.foodbooking.model.UserRole;
 import com.foodbooking.util.AlertHelper;
 import com.foodbooking.util.SessionManager;
 import javafx.collections.FXCollections;
@@ -66,6 +69,9 @@ public class OrdersTabController implements Initializable {
     private Button changeStatusButton;
 
     @FXML
+    private Button assignDriverButton;
+
+    @FXML
     private Button requestCancellationButton;
 
     @FXML
@@ -74,6 +80,7 @@ public class OrdersTabController implements Initializable {
     private OrderDAO orderDAO = new OrderDAO();
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
     private CancellationRequestDAO cancellationRequestDAO = new CancellationRequestDAO();
+    private UserDAO userDAO = new UserDAO();
     private ObservableList<Order> ordersList = FXCollections.observableArrayList();
 
     @Override
@@ -95,15 +102,26 @@ public class OrdersTabController implements Initializable {
             deleteButton.setManaged(false);
             changeStatusButton.setVisible(false);
             changeStatusButton.setManaged(false);
+            assignDriverButton.setVisible(false);
+            assignDriverButton.setManaged(false);
             requestCancellationButton.setVisible(true);
             requestCancellationButton.setManaged(true);
-        } else {
-            // Other roles (admin, restaurant owner, driver) cannot create new orders directly
-            // But they can change status and delete
+        } else if (SessionManager.getInstance().isRestaurantOwner() || SessionManager.getInstance().isAdministrator()) {
+            // Restaurant owners and admins can assign drivers
             addButton.setVisible(false);
             addButton.setManaged(false);
             requestCancellationButton.setVisible(false);
             requestCancellationButton.setManaged(false);
+            assignDriverButton.setVisible(true);
+            assignDriverButton.setManaged(true);
+        } else {
+            // Drivers cannot create orders or assign drivers
+            addButton.setVisible(false);
+            addButton.setManaged(false);
+            requestCancellationButton.setVisible(false);
+            requestCancellationButton.setManaged(false);
+            assignDriverButton.setVisible(false);
+            assignDriverButton.setManaged(false);
         }
 
         // Load data
@@ -348,6 +366,68 @@ public class OrdersTabController implements Initializable {
                 } else {
                     AlertHelper.showError("Klaida", "Nepavyko pateikti atšaukimo užklausos!");
                 }
+            }
+        });
+    }
+
+    @FXML
+    private void handleAssignDriver() {
+        Order selected = ordersTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showWarning("Įspėjimas", "Pasirinkite užsakymą vairuotojo priskyrimui!");
+            return;
+        }
+
+        // Check if order status allows driver assignment
+        if (selected.getStatus() == OrderStatus.CANCELLED || selected.getStatus() == OrderStatus.DELIVERED) {
+            AlertHelper.showError("Klaida", "Negalima priskirti vairuotojo atšauktam arba pristatytam užsakymui!");
+            return;
+        }
+
+        // Get all drivers
+        List<User> drivers = userDAO.getUsersByRole(UserRole.DRIVER);
+        if (drivers.isEmpty()) {
+            AlertHelper.showError("Klaida", "Sistemoje nėra registruotų vairuotojų!");
+            return;
+        }
+
+        // Create choice dialog with drivers
+        ChoiceDialog<User> dialog = new ChoiceDialog<>(null, drivers);
+        dialog.setTitle("Priskirti vairuotoją");
+        dialog.setHeaderText(String.format("Priskirti vairuotoją užsakymui #%d\n\nRestoranas: %s\nAdresas: %s",
+            selected.getId(),
+            selected.getRestaurantName(),
+            selected.getDeliveryAddress()));
+        dialog.setContentText("Pasirinkite vairuotoją:");
+
+        // Set converter to display driver name
+        dialog.getComboBox().setConverter(new javafx.util.StringConverter<User>() {
+            @Override
+            public String toString(User driver) {
+                return driver != null ? driver.getFullName() + " (" + driver.getPhoneNumber() + ")" : "";
+            }
+
+            @Override
+            public User fromString(String string) {
+                return null;
+            }
+        });
+
+        dialog.showAndWait().ifPresent(driver -> {
+            // Assign driver to order
+            if (orderDAO.assignDriver(selected.getId(), driver.getId())) {
+                // Update status to PICKED_UP or READY based on current status
+                OrderStatus newStatus = selected.getStatus() == OrderStatus.PENDING ? OrderStatus.CONFIRMED : OrderStatus.READY;
+                selected.updateStatus(newStatus);
+                orderDAO.updateOrder(selected);
+
+                AlertHelper.showSuccess("Sėkmė",
+                    String.format("Vairuotojas %s priskirtas užsakymui #%d!\n\n" +
+                        "Vairuotojas matys užsakymą savo sąraše.",
+                        driver.getFullName(), selected.getId()));
+                loadOrders();
+            } else {
+                AlertHelper.showError("Klaida", "Nepavyko priskirti vairuotojo!");
             }
         });
     }

@@ -187,4 +187,18 @@ public class CancellationRequestDAO {
 
         return request;
     }
+
+    public boolean deleteCancellationRequest(int requestId) {
+        String sql = "DELETE FROM cancellation_requests WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, requestId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
