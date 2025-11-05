@@ -391,8 +391,17 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Create choice dialog with drivers
-        ChoiceDialog<User> dialog = new ChoiceDialog<>(null, drivers);
+        // Create a map of display names to drivers
+        java.util.Map<String, User> driverMap = new java.util.HashMap<>();
+        List<String> driverNames = new java.util.ArrayList<>();
+        for (User driver : drivers) {
+            String displayName = driver.getFullName() + " (" + driver.getPhoneNumber() + ")";
+            driverMap.put(displayName, driver);
+            driverNames.add(displayName);
+        }
+
+        // Create choice dialog with driver names
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(null, driverNames);
         dialog.setTitle("Priskirti vairuotoją");
         dialog.setHeaderText(String.format("Priskirti vairuotoją užsakymui #%d\n\nRestoranas: %s\nAdresas: %s",
             selected.getId(),
@@ -400,20 +409,13 @@ public class OrdersTabController implements Initializable {
             selected.getDeliveryAddress()));
         dialog.setContentText("Pasirinkite vairuotoją:");
 
-        // Set converter to display driver name
-        dialog.getComboBox().setConverter(new javafx.util.StringConverter<User>() {
-            @Override
-            public String toString(User driver) {
-                return driver != null ? driver.getFullName() + " (" + driver.getPhoneNumber() + ")" : "";
+        dialog.showAndWait().ifPresent(selectedDriverName -> {
+            User driver = driverMap.get(selectedDriverName);
+            if (driver == null) {
+                AlertHelper.showError("Klaida", "Nepavyko rasti pasirinkto vairuotojo!");
+                return;
             }
 
-            @Override
-            public User fromString(String string) {
-                return null;
-            }
-        });
-
-        dialog.showAndWait().ifPresent(driver -> {
             // Assign driver to order
             if (orderDAO.assignDriver(selected.getId(), driver.getId())) {
                 // Update status to PICKED_UP or READY based on current status
