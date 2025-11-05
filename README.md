@@ -2,6 +2,38 @@
 
 Maisto užsakymo ir pristatymo valdymo sistema, sukurta naudojant Java, JavaFX ir MySQL.
 
+---
+
+## 🚀 Quick Start (Clone -> Run)
+
+> **⚠️ SVARBU**: Pilna instrukcija: [SETUP_INSTRUKCIJOS.md](SETUP_INSTRUKCIJOS.md)
+
+### Minimumas (5 žingsniai):
+
+1. **Clone & Open**
+   ```bash
+   git clone <repo-url>
+   cd 1Lab-2Lab
+   ```
+   Atidarykite IntelliJ IDEA
+
+2. **XAMPP MySQL** - Start MySQL
+
+3. **phpMyAdmin** (http://localhost/phpmyadmin)
+   - Sukurkite `food_booking_db` bazę
+
+4. **Pataisyti Slaptažodžius** (BŪTINA!)
+   - IntelliJ: Run `src/main/java/com/foodbooking/util/PasswordChecker.java`
+   - Copy naują hash'ą
+   - Redaguoti `database/schema.sql` - pakeisti visus `password` hash'us
+   - phpMyAdmin: Import `schema.sql`
+
+5. **Run** `MainApp.java` → Login: `admin` / `password123`
+
+**Problemos?** → [PRISIJUNGIMO_PROBLEMA.md](PRISIJUNGIMO_PROBLEMA.md)
+
+---
+
 ## Projekto Struktūra
 
 ```
