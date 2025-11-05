@@ -146,18 +146,19 @@ public class MenuItemsTabController implements Initializable {
         // Setup restaurant filter
         loadRestaurantFilter();
 
-        // Setup category filter
+        // Setup category filter (must match database categories exactly)
         categoryFilterComboBox.getItems().addAll(
             "Visi",
-            "Užkandžiai",
+            "Pica",
+            "Makaronai",
+            "Suši",
             "Sriubos",
-            "Pagrindiniai patiekalai",
             "Desertai",
+            "Užkandžiai",
+            "Salotos",
+            "Pagrindiniai patiekalai",
             "Gėrimai",
             "Alkoholiniai gėrimai",
-            "Salotos",
-            "Picos",
-            "Suši",
             "Kita"
         );
         categoryFilterComboBox.setValue("Visi");

@@ -274,15 +274,34 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Only admins and order owners can delete
-        if (!SessionManager.getInstance().isAdministrator() &&
-            !selected.getClientId().equals(SessionManager.getInstance().getCurrentUser().getId())) {
-            AlertHelper.showError("Klaida", "Negalite ištrinti šio užsakymo!");
+        // Permission checks
+        if (SessionManager.getInstance().isAdministrator()) {
+            // Admins can delete any order
+        } else if (SessionManager.getInstance().isRestaurantOwner()) {
+            // Restaurant owners can only delete CANCELLED orders from their restaurants
+            if (selected.getStatus() != OrderStatus.CANCELLED) {
+                AlertHelper.showError("Klaida",
+                    "Galite trinti tik atšauktus užsakymus!\n\n" +
+                    "Dabartinis statusas: " + selected.getStatus().getDisplayName());
+                return;
+            }
+
+            // Check if order belongs to owner's restaurant
+            Restaurant restaurant = restaurantDAO.getRestaurantById(selected.getRestaurantId());
+            if (restaurant == null || !restaurant.getOwnerId().equals(
+                    SessionManager.getInstance().getCurrentUser().getId())) {
+                AlertHelper.showError("Klaida", "Galite trinti tik savo restorano užsakymus!");
+                return;
+            }
+        } else {
+            // Clients and drivers cannot delete orders
+            AlertHelper.showError("Klaida", "Neturite teisės trinti užsakymų!");
             return;
         }
 
         if (AlertHelper.showConfirmation("Patvirtinimas",
-                "Ar tikrai norite ištrinti užsakymą #" + selected.getId() + "?")) {
+                String.format("Ar tikrai norite ištrinti užsakymą #%d?\n\nRestoranas: %s\nSuma: %.2f €",
+                    selected.getId(), selected.getRestaurantName(), selected.getTotalAmount()))) {
             try {
                 if (orderDAO.deleteOrder(selected.getId())) {
                     AlertHelper.showSuccess("Sėkmė", "Užsakymas sėkmingai ištrintas!");
