@@ -237,11 +237,13 @@ public class ShoppingCartTabController implements Initializable {
             order.setStatus(OrderStatus.PENDING);
 
             // Save order
-            int orderId = orderDAO.createOrder(order);
-            if (orderId <= 0) {
+            if (!orderDAO.createOrder(order)) {
                 AlertHelper.showError("Klaida", "Nepavyko sukurti užsakymo!");
                 return;
             }
+
+            // Get the generated order ID
+            int orderId = order.getId();
 
             // Save order items
             for (CartItem cartItem : cart.getItems()) {
@@ -256,7 +258,6 @@ public class ShoppingCartTabController implements Initializable {
             }
 
             // Update order total
-            order.setId(orderId);
             order.calculateTotal();
             orderDAO.updateOrder(order);
 
