@@ -14,7 +14,7 @@
         <Label text="Restoranų valdymas" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button fx:id="addButton" text="Pridėti naują" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-        <Button text="Redaguoti" onAction="#handleEdit" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button fx:id="editButton" text="Redaguoti" onAction="#handleEdit" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
         <Button fx:id="deleteButton" text="Ištrinti" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
         <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
     </HBox>

@@ -48,16 +48,21 @@ public class MainController implements Initializable {
                 addTab("Restoranai", "/fxml/RestaurantsTab.fxml");
                 addTab("Meniu", "/fxml/MenuItemsTab.fxml");
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
+                addTab("Atšaukimo užklausos", "/fxml/CancellationRequestsTab.fxml");
             } else if (user.isRestaurantOwner()) {
-                // Restaurant owner sees their restaurant's menu and orders
+                // Restaurant owner sees their restaurant's menu, orders, and cancellation requests
                 addTab("Mano restoranas", "/fxml/RestaurantsTab.fxml");
                 addTab("Meniu", "/fxml/MenuItemsTab.fxml");
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
+                addTab("Atšaukimo užklausos", "/fxml/CancellationRequestsTab.fxml");
             } else if (user.isDriver()) {
                 // Driver sees available orders and their orders
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
             } else if (user.isClient()) {
-                // Client sees only their orders (cannot manage restaurants or menu)
+                // Client can view restaurants and menu (read-only), use shopping cart, and manage their orders
+                addTab("Restoranai", "/fxml/RestaurantsTab.fxml");
+                addTab("Meniu", "/fxml/MenuItemsTab.fxml");
+                addTab("🛒 Krepšelis", "/fxml/ShoppingCartTab.fxml");
                 addTab("Mano užsakymai", "/fxml/OrdersTab.fxml");
             }
         } catch (Exception e) {

@@ -1,12 +1,15 @@
 package com.foodbooking.util;
 
+import com.foodbooking.model.ShoppingCart;
 import com.foodbooking.model.User;
 
 public class SessionManager {
     private static SessionManager instance;
     private User currentUser;
+    private ShoppingCart shoppingCart;
 
     private SessionManager() {
+        this.shoppingCart = new ShoppingCart();
     }
 
     public static SessionManager getInstance() {
@@ -30,6 +33,15 @@ public class SessionManager {
 
     public void logout() {
         currentUser = null;
+        shoppingCart.clear();
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void clearCart() {
+        shoppingCart.clear();
     }
 
     public boolean isClient() {

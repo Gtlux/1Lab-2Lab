@@ -52,6 +52,9 @@ public class RestaurantsTabController implements Initializable {
     private Button addButton;
 
     @FXML
+    private Button editButton;
+
+    @FXML
     private Button deleteButton;
 
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
@@ -75,6 +78,12 @@ public class RestaurantsTabController implements Initializable {
             addButton.setManaged(false);
             deleteButton.setVisible(false);
             deleteButton.setManaged(false);
+        }
+
+        // Hide "Edit" button for clients (they can only view)
+        if (SessionManager.getInstance().isClient()) {
+            editButton.setVisible(false);
+            editButton.setManaged(false);
         }
 
         // Load data
@@ -136,6 +145,12 @@ public class RestaurantsTabController implements Initializable {
         Restaurant selected = restaurantsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             AlertHelper.showWarning("Įspėjimas", "Pasirinkite restoraną redagavimui!");
+            return;
+        }
+
+        // Clients cannot edit restaurants
+        if (SessionManager.getInstance().isClient()) {
+            AlertHelper.showError("Klaida", "Klientai negali redaguoti restoranų!");
             return;
         }
 

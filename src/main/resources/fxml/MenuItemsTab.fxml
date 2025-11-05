@@ -13,19 +13,35 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Meniu valdymas" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Pridėti naują" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-        <Button text="Redaguoti" onAction="#handleEdit" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-        <Button text="Ištrinti" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Button fx:id="addButton" text="Pridėti naują" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="editButton" text="Redaguoti" onAction="#handleEdit" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button fx:id="deleteButton" text="Ištrinti" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Button fx:id="addToCartButton" text="🛒 Į krepšelį" onAction="#handleAddToCart" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14;" managed="false" visible="false"/>
         <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
     </HBox>
 
     <!-- Filter Section -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Filtruoti pagal restoraną:"/>
-        <ComboBox fx:id="restaurantFilterComboBox" promptText="Visi restoranai" prefWidth="200"/>
-        <Button text="Taikyti filtrą" onAction="#handleFilter" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
-        <Button text="Išvalyti filtrą" onAction="#handleClearFilter" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
-    </HBox>
+    <VBox spacing="10">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Filtruoti:"/>
+            <Label text="Restoranas:"/>
+            <ComboBox fx:id="restaurantFilterComboBox" promptText="Visi" prefWidth="150"/>
+            <Label text="Kategorija:"/>
+            <ComboBox fx:id="categoryFilterComboBox" promptText="Visos" prefWidth="120"/>
+            <Label text="Prieinamumas:"/>
+            <ComboBox fx:id="availabilityFilterComboBox" promptText="Visi" prefWidth="100"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Pavadinimas:"/>
+            <TextField fx:id="nameFilterField" promptText="Ieškoti..." prefWidth="150"/>
+            <Label text="Kaina nuo:"/>
+            <TextField fx:id="minPriceField" promptText="0.00" prefWidth="80"/>
+            <Label text="iki:"/>
+            <TextField fx:id="maxPriceField" promptText="999.99" prefWidth="80"/>
+            <Button text="Taikyti filtrus" onAction="#handleFilter" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+            <Button text="Išvalyti" onAction="#handleClearFilter" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
 
     <!-- Table -->
     <TableView fx:id="menuItemsTable" VBox.vgrow="ALWAYS">

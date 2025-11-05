@@ -1,7 +1,9 @@
 package com.foodbooking.controller;
 
+import com.foodbooking.dao.CancellationRequestDAO;
 import com.foodbooking.dao.OrderDAO;
 import com.foodbooking.dao.RestaurantDAO;
+import com.foodbooking.model.CancellationRequest;
 import com.foodbooking.model.Order;
 import com.foodbooking.model.OrderStatus;
 import com.foodbooking.model.Restaurant;
@@ -12,10 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -55,8 +59,21 @@ public class OrdersTabController implements Initializable {
     @FXML
     private TableColumn<Order, LocalDateTime> createdAtColumn;
 
+    @FXML
+    private Button addButton;
+
+    @FXML
+    private Button changeStatusButton;
+
+    @FXML
+    private Button requestCancellationButton;
+
+    @FXML
+    private Button deleteButton;
+
     private OrderDAO orderDAO = new OrderDAO();
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
+    private CancellationRequestDAO cancellationRequestDAO = new CancellationRequestDAO();
     private ObservableList<Order> ordersList = FXCollections.observableArrayList();
 
     @Override
@@ -70,6 +87,24 @@ public class OrdersTabController implements Initializable {
         totalAmountColumn.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
         deliveryAddressColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryAddress"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+
+        // Configure buttons based on user role
+        if (SessionManager.getInstance().isClient()) {
+            // Clients can create orders and request cancellation, but cannot delete
+            deleteButton.setVisible(false);
+            deleteButton.setManaged(false);
+            changeStatusButton.setVisible(false);
+            changeStatusButton.setManaged(false);
+            requestCancellationButton.setVisible(true);
+            requestCancellationButton.setManaged(true);
+        } else {
+            // Other roles (admin, restaurant owner, driver) cannot create new orders directly
+            // But they can change status and delete
+            addButton.setVisible(false);
+            addButton.setManaged(false);
+            requestCancellationButton.setVisible(false);
+            requestCancellationButton.setManaged(false);
+        }
 
         // Load data
         loadOrders();
@@ -242,6 +277,79 @@ public class OrdersTabController implements Initializable {
                 AlertHelper.showError("Klaida", "Šalinimo klaida: " + e.getMessage());
             }
         }
+    }
+
+    @FXML
+    private void handleRequestCancellation() {
+        Order selected = ordersTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showWarning("Įspėjimas", "Pasirinkite užsakymą atšaukimui!");
+            return;
+        }
+
+        // Only clients can request cancellation of their own orders
+        if (!SessionManager.getInstance().isClient() ||
+            !selected.getClientId().equals(SessionManager.getInstance().getCurrentUser().getId())) {
+            AlertHelper.showError("Klaida", "Galite atšaukti tik savo užsakymus!");
+            return;
+        }
+
+        // Cannot cancel already delivered or cancelled orders
+        if (selected.getStatus() == OrderStatus.DELIVERED || selected.getStatus() == OrderStatus.CANCELLED) {
+            AlertHelper.showError("Klaida", "Negalima atšaukti jau pristatyto arba atšaukto užsakymo!");
+            return;
+        }
+
+        // Check if there's already a pending cancellation request
+        CancellationRequest existingRequest = cancellationRequestDAO.getCancellationRequestByOrderId(selected.getId());
+        if (existingRequest != null && existingRequest.getStatus() == CancellationRequest.CancellationStatus.PENDING) {
+            AlertHelper.showWarning("Įspėjimas",
+                "Šio užsakymo atšaukimo užklausa jau pateikta!\n\n" +
+                "Statusas: Laukiama restorano savininko patvirtinimo");
+            return;
+        }
+
+        // Show cancellation reason dialog
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Atšaukimo užklausa");
+        dialog.setHeaderText("Prašome nurodyti atšaukimo priežastį");
+        dialog.setContentText("Priežastis:");
+
+        dialog.showAndWait().ifPresent(reason -> {
+            if (reason.trim().isEmpty()) {
+                AlertHelper.showError("Klaida", "Prašome nurodyti atšaukimo priežastį!");
+                return;
+            }
+
+            // Create confirmation dialog
+            String confirmMessage = String.format(
+                "Ar tikrai norite pateikti užsakymo #%d atšaukimo užklausą?\n\n" +
+                "Priežastis: %s\n\n" +
+                "Restorano savininkas peržiūrės ir priims sprendimą.",
+                selected.getId(), reason
+            );
+
+            if (AlertHelper.showConfirmation("Patvirtinimas", confirmMessage)) {
+                // Create cancellation request
+                CancellationRequest request = new CancellationRequest(
+                    selected.getId(),
+                    SessionManager.getInstance().getCurrentUser().getId(),
+                    reason.trim()
+                );
+
+                int requestId = cancellationRequestDAO.createCancellationRequest(request);
+                if (requestId > 0) {
+                    AlertHelper.showSuccess("Sėkmė",
+                        "Atšaukimo užklausa sėkmingai pateikta!\n\n" +
+                        "Užklausa #" + requestId + "\n" +
+                        "Restorano savininkas gaus pranešimą ir priims sprendimą.\n\n" +
+                        "Galite stebėti užklausos statusą užsakymų sąraše.");
+                    loadOrders();
+                } else {
+                    AlertHelper.showError("Klaida", "Nepavyko pateikti atšaukimo užklausos!");
+                }
+            }
+        });
     }
 
     @FXML

@@ -12,9 +12,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,6 +25,7 @@ import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +59,33 @@ public class MenuItemsTabController implements Initializable {
 
     @FXML
     private ComboBox<Restaurant> restaurantFilterComboBox;
+
+    @FXML
+    private ComboBox<String> categoryFilterComboBox;
+
+    @FXML
+    private ComboBox<String> availabilityFilterComboBox;
+
+    @FXML
+    private TextField nameFilterField;
+
+    @FXML
+    private TextField minPriceField;
+
+    @FXML
+    private TextField maxPriceField;
+
+    @FXML
+    private Button addButton;
+
+    @FXML
+    private Button editButton;
+
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private Button addToCartButton;
 
     private MenuItemDAO menuItemDAO = new MenuItemDAO();
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
@@ -94,8 +125,46 @@ public class MenuItemsTabController implements Initializable {
             }
         });
 
-        loadRestaurantFilter();
+        // Hide all editing buttons for clients (they can only view menu)
+        if (SessionManager.getInstance().isClient()) {
+            addButton.setVisible(false);
+            addButton.setManaged(false);
+            editButton.setVisible(false);
+            editButton.setManaged(false);
+            deleteButton.setVisible(false);
+            deleteButton.setManaged(false);
+            // Show add to cart button for clients only
+            addToCartButton.setVisible(true);
+            addToCartButton.setManaged(true);
+        }
+
+        setupFilters();
         loadMenuItems();
+    }
+
+    private void setupFilters() {
+        // Setup restaurant filter
+        loadRestaurantFilter();
+
+        // Setup category filter
+        categoryFilterComboBox.getItems().addAll(
+            "Visi",
+            "Užkandžiai",
+            "Sriubos",
+            "Pagrindiniai patiekalai",
+            "Desertai",
+            "Gėrimai",
+            "Alkoholiniai gėrimai",
+            "Salotos",
+            "Picos",
+            "Suši",
+            "Kita"
+        );
+        categoryFilterComboBox.setValue("Visi");
+
+        // Setup availability filter
+        availabilityFilterComboBox.getItems().addAll("Visi", "Prieinami", "Neprieinami");
+        availabilityFilterComboBox.setValue("Visi");
     }
 
     private void loadRestaurantFilter() {
@@ -135,6 +204,12 @@ public class MenuItemsTabController implements Initializable {
 
     @FXML
     private void handleAdd() {
+        // Clients cannot add menu items
+        if (SessionManager.getInstance().isClient()) {
+            AlertHelper.showError("Klaida", "Klientai negali pridėti meniu elementų!");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MenuItemDialog.fxml"));
             Parent root = loader.load();
@@ -162,6 +237,12 @@ public class MenuItemsTabController implements Initializable {
         com.foodbooking.model.MenuItem selected = menuItemsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             AlertHelper.showWarning("Įspėjimas", "Pasirinkite meniu elementą redagavimui!");
+            return;
+        }
+
+        // Clients cannot edit menu items
+        if (SessionManager.getInstance().isClient()) {
+            AlertHelper.showError("Klaida", "Klientai negali redaguoti meniu elementų!");
             return;
         }
 
@@ -206,6 +287,12 @@ public class MenuItemsTabController implements Initializable {
             return;
         }
 
+        // Clients cannot delete menu items
+        if (SessionManager.getInstance().isClient()) {
+            AlertHelper.showError("Klaida", "Klientai negali ištrinti meniu elementų!");
+            return;
+        }
+
         // Restaurant owners can only delete their own menu items
         if (SessionManager.getInstance().isRestaurantOwner()) {
             Restaurant restaurant = restaurantDAO.getRestaurantById(selected.getRestaurantId());
@@ -239,17 +326,80 @@ public class MenuItemsTabController implements Initializable {
 
     @FXML
     private void handleFilter() {
-        Restaurant selectedRestaurant = restaurantFilterComboBox.getValue();
-        if (selectedRestaurant == null) {
-            AlertHelper.showWarning("Įspėjimas", "Pasirinkite restoraną filtravimui!");
-            return;
-        }
-
         try {
-            List<com.foodbooking.model.MenuItem> menuItems = menuItemDAO.getMenuItemsByRestaurantId(selectedRestaurant.getId());
+            // Start with all menu items based on user role
+            List<com.foodbooking.model.MenuItem> menuItems;
+            if (SessionManager.getInstance().isRestaurantOwner()) {
+                List<Restaurant> ownRestaurants = restaurantDAO.getRestaurantsByOwnerId(
+                        SessionManager.getInstance().getCurrentUser().getId());
+                menuItems = new ArrayList<>();
+                for (Restaurant restaurant : ownRestaurants) {
+                    menuItems.addAll(menuItemDAO.getMenuItemsByRestaurantId(restaurant.getId()));
+                }
+            } else {
+                menuItems = menuItemDAO.getAllMenuItems();
+            }
+
+            // Apply filters
+            List<com.foodbooking.model.MenuItem> filteredItems = new ArrayList<>(menuItems);
+
+            // Filter by restaurant
+            Restaurant selectedRestaurant = restaurantFilterComboBox.getValue();
+            if (selectedRestaurant != null) {
+                filteredItems.removeIf(item -> !item.getRestaurantId().equals(selectedRestaurant.getId()));
+            }
+
+            // Filter by category
+            String selectedCategory = categoryFilterComboBox.getValue();
+            if (selectedCategory != null && !selectedCategory.equals("Visi")) {
+                filteredItems.removeIf(item -> item.getCategory() == null ||
+                    !item.getCategory().equalsIgnoreCase(selectedCategory));
+            }
+
+            // Filter by availability
+            String selectedAvailability = availabilityFilterComboBox.getValue();
+            if (selectedAvailability != null && !selectedAvailability.equals("Visi")) {
+                boolean available = selectedAvailability.equals("Prieinami");
+                filteredItems.removeIf(item -> item.getAvailable() != available);
+            }
+
+            // Filter by name
+            String nameFilter = nameFilterField.getText();
+            if (nameFilter != null && !nameFilter.trim().isEmpty()) {
+                String lowerCaseFilter = nameFilter.toLowerCase().trim();
+                filteredItems.removeIf(item -> !item.getName().toLowerCase().contains(lowerCaseFilter));
+            }
+
+            // Filter by price range
+            String minPriceText = minPriceField.getText();
+            String maxPriceText = maxPriceField.getText();
+
+            if (minPriceText != null && !minPriceText.trim().isEmpty()) {
+                try {
+                    BigDecimal minPrice = new BigDecimal(minPriceText.trim());
+                    filteredItems.removeIf(item -> item.getPrice().compareTo(minPrice) < 0);
+                } catch (NumberFormatException e) {
+                    AlertHelper.showError("Klaida", "Neteisingas minimalios kainos formatas!");
+                    return;
+                }
+            }
+
+            if (maxPriceText != null && !maxPriceText.trim().isEmpty()) {
+                try {
+                    BigDecimal maxPrice = new BigDecimal(maxPriceText.trim());
+                    filteredItems.removeIf(item -> item.getPrice().compareTo(maxPrice) > 0);
+                } catch (NumberFormatException e) {
+                    AlertHelper.showError("Klaida", "Neteisingas maksimalios kainos formatas!");
+                    return;
+                }
+            }
+
+            // Update table
             menuItemsList.clear();
-            menuItemsList.addAll(menuItems);
+            menuItemsList.addAll(filteredItems);
             menuItemsTable.setItems(menuItemsList);
+
+            AlertHelper.showInfo("Filtravimas", "Rasta " + filteredItems.size() + " meniu elementų.");
         } catch (Exception e) {
             e.printStackTrace();
             AlertHelper.showError("Klaida", "Filtravimo klaida: " + e.getMessage());
@@ -259,6 +409,54 @@ public class MenuItemsTabController implements Initializable {
     @FXML
     private void handleClearFilter() {
         restaurantFilterComboBox.setValue(null);
+        categoryFilterComboBox.setValue("Visi");
+        availabilityFilterComboBox.setValue("Visi");
+        nameFilterField.clear();
+        minPriceField.clear();
+        maxPriceField.clear();
         loadMenuItems();
+    }
+
+    @FXML
+    private void handleAddToCart() {
+        com.foodbooking.model.MenuItem selected = menuItemsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showWarning("Įspėjimas", "Pasirinkite meniu elementą pridėjimui į krepšelį!");
+            return;
+        }
+
+        if (!selected.getAvailable()) {
+            AlertHelper.showError("Klaida", "Šis patiekalas šiuo metu neprieinamas!");
+            return;
+        }
+
+        // Ask for quantity
+        TextInputDialog dialog = new TextInputDialog("1");
+        dialog.setTitle("Kiekis");
+        dialog.setHeaderText("Pridėti į krepšelį: " + selected.getName());
+        dialog.setContentText("Kiekis:");
+
+        dialog.showAndWait().ifPresent(quantityStr -> {
+            try {
+                int quantity = Integer.parseInt(quantityStr.trim());
+                if (quantity <= 0) {
+                    AlertHelper.showError("Klaida", "Kiekis turi būti teigiamas skaičius!");
+                    return;
+                }
+
+                // Add to cart
+                try {
+                    SessionManager.getInstance().getShoppingCart().addItem(selected, quantity);
+                    AlertHelper.showSuccess("Sėkmė",
+                        String.format("%s (x%d) pridėta į krepšelį!\n\nKrepšelyje: %d prekė(-ių)",
+                            selected.getName(), quantity,
+                            SessionManager.getInstance().getShoppingCart().getItemCount()));
+                } catch (IllegalArgumentException e) {
+                    AlertHelper.showError("Klaida", e.getMessage());
+                }
+            } catch (NumberFormatException e) {
+                AlertHelper.showError("Klaida", "Neteisingas kiekio formatas!");
+            }
+        });
     }
 }

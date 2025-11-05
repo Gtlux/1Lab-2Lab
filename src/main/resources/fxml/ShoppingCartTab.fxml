@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.ShoppingCartTabController" spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Title -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="🛒 Krepšelis" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="cartStatusLabel" text="Tuščias krepšelis" style="-fx-font-size: 14; -fx-text-fill: #666;"/>
+    </HBox>
+
+    <!-- Restaurant Info -->
+    <VBox fx:id="restaurantInfoBox" spacing="5" style="-fx-background-color: #E3F2FD; -fx-padding: 10; -fx-background-radius: 5;" managed="false" visible="false">
+        <Label fx:id="restaurantNameLabel" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+        <Label fx:id="restaurantAddressLabel" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+    </VBox>
+
+    <!-- Cart Items Table -->
+    <TableView fx:id="cartTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Patiekalas" prefWidth="250"/>
+            <TableColumn fx:id="priceColumn" text="Kaina (€)" prefWidth="100"/>
+            <TableColumn fx:id="quantityColumn" text="Kiekis" prefWidth="100"/>
+            <TableColumn fx:id="subtotalColumn" text="Suma (€)" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Keisti kiekį" onAction="#handleChangeQuantity" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Pašalinti" onAction="#handleRemove" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Button text="Išvalyti krepšelį" onAction="#handleClear" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Total and Checkout -->
+    <VBox spacing="10" style="-fx-background-color: #F5F5F5; -fx-padding: 15; -fx-background-radius: 5;">
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Label text="Viso mokėti:" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+            <Label fx:id="totalLabel" text="0.00 €" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+        </HBox>
+
+        <Separator/>
+
+        <Label text="Pristatymo adresas:" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="deliveryAddressField" promptText="Įveskite pristatymo adresą..."/>
+
+        <Label text="Pastabos (neprivaloma):"/>
+        <TextArea fx:id="notesArea" promptText="Specialūs pageidavimai..." prefRowCount="2"/>
+
+        <Button fx:id="checkoutButton" text="✓ Patvirtinti užsakymą" onAction="#handleCheckout"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16; -fx-padding: 10 20;"
+                maxWidth="Infinity" disable="true"/>
+    </VBox>
+</VBox>

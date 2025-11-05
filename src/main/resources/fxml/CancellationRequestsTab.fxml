@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.foodbooking.controller.CancellationRequestsTabController" spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Title and Buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Atšaukimo užklausos" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Patvirtinti" onAction="#handleApprove" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Atmesti" onAction="#handleReject" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Button text="Peržiūrėti" onAction="#handleView" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Filter -->
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #F5F5F5; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label text="Rodyti:"/>
+        <RadioButton fx:id="pendingRadio" text="Laukiančios" selected="true" toggleGroup="statusFilter"/>
+        <RadioButton fx:id="allRadio" text="Visos" toggleGroup="statusFilter"/>
+    </HBox>
+
+    <!-- Table -->
+    <TableView fx:id="requestsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="orderIdColumn" text="Užsakymas #" prefWidth="100"/>
+            <TableColumn fx:id="restaurantColumn" text="Restoranas" prefWidth="150"/>
+            <TableColumn fx:id="clientColumn" text="Klientas" prefWidth="120"/>
+            <TableColumn fx:id="reasonColumn" text="Priežastis" prefWidth="250"/>
+            <TableColumn fx:id="statusColumn" text="Statusas" prefWidth="100"/>
+            <TableColumn fx:id="createdAtColumn" text="Pateikta" prefWidth="150"/>
+            <TableColumn fx:id="reviewerColumn" text="Peržiūrėjo" prefWidth="120"/>
+        </columns>
+    </TableView>
+</VBox>
