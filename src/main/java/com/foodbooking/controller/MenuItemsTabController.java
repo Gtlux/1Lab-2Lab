@@ -2,7 +2,6 @@ package com.foodbooking.controller;
 
 import com.foodbooking.dao.MenuItemDAO;
 import com.foodbooking.dao.RestaurantDAO;
-import com.foodbooking.model.MenuItem;
 import com.foodbooking.model.Restaurant;
 import com.foodbooking.util.AlertHelper;
 import com.foodbooking.util.SessionManager;
@@ -31,35 +30,35 @@ import java.util.ResourceBundle;
 public class MenuItemsTabController implements Initializable {
 
     @FXML
-    private TableView<MenuItem> menuItemsTable;
+    private TableView<com.foodbooking.model.MenuItem> menuItemsTable;
 
     @FXML
-    private TableColumn<MenuItem, Integer> idColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, Integer> idColumn;
 
     @FXML
-    private TableColumn<MenuItem, String> nameColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, String> nameColumn;
 
     @FXML
-    private TableColumn<MenuItem, String> descriptionColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, String> descriptionColumn;
 
     @FXML
-    private TableColumn<MenuItem, BigDecimal> priceColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, BigDecimal> priceColumn;
 
     @FXML
-    private TableColumn<MenuItem, String> categoryColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, String> categoryColumn;
 
     @FXML
-    private TableColumn<MenuItem, String> restaurantColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, String> restaurantColumn;
 
     @FXML
-    private TableColumn<MenuItem, Boolean> availableColumn;
+    private TableColumn<com.foodbooking.model.MenuItem, Boolean> availableColumn;
 
     @FXML
     private ComboBox<Restaurant> restaurantFilterComboBox;
 
     private MenuItemDAO menuItemDAO = new MenuItemDAO();
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
-    private ObservableList<MenuItem> menuItemsList = FXCollections.observableArrayList();
+    private ObservableList<com.foodbooking.model.MenuItem> menuItemsList = FXCollections.observableArrayList();
     private Map<Integer, String> restaurantNamesCache = new HashMap<>();
 
     @Override
@@ -113,7 +112,7 @@ public class MenuItemsTabController implements Initializable {
 
     private void loadMenuItems() {
         try {
-            List<MenuItem> menuItems;
+            List<com.foodbooking.model.MenuItem> menuItems;
             if (SessionManager.getInstance().isRestaurantOwner()) {
                 // Restaurant owners see only their restaurant's menu items
                 List<Restaurant> ownRestaurants = restaurantDAO.getRestaurantsByOwnerId(
@@ -160,7 +159,7 @@ public class MenuItemsTabController implements Initializable {
 
     @FXML
     private void handleEdit() {
-        MenuItem selected = menuItemsTable.getSelectionModel().getSelectedItem();
+        com.foodbooking.model.MenuItem selected = menuItemsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             AlertHelper.showWarning("Įspėjimas", "Pasirinkite meniu elementą redagavimui!");
             return;
@@ -201,7 +200,7 @@ public class MenuItemsTabController implements Initializable {
 
     @FXML
     private void handleDelete() {
-        MenuItem selected = menuItemsTable.getSelectionModel().getSelectedItem();
+        com.foodbooking.model.MenuItem selected = menuItemsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             AlertHelper.showWarning("Įspėjimas", "Pasirinkite meniu elementą šalinimui!");
             return;
@@ -247,7 +246,7 @@ public class MenuItemsTabController implements Initializable {
         }
 
         try {
-            List<MenuItem> menuItems = menuItemDAO.getMenuItemsByRestaurantId(selectedRestaurant.getId());
+            List<com.foodbooking.model.MenuItem> menuItems = menuItemDAO.getMenuItemsByRestaurantId(selectedRestaurant.getId());
             menuItemsList.clear();
             menuItemsList.addAll(menuItems);
             menuItemsTable.setItems(menuItemsList);

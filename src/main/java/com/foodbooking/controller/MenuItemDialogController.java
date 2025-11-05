@@ -2,7 +2,6 @@ package com.foodbooking.controller;
 
 import com.foodbooking.dao.MenuItemDAO;
 import com.foodbooking.dao.RestaurantDAO;
-import com.foodbooking.model.MenuItem;
 import com.foodbooking.model.Restaurant;
 import com.foodbooking.util.AlertHelper;
 import com.foodbooking.util.SessionManager;
@@ -47,7 +46,7 @@ public class MenuItemDialogController implements Initializable {
 
     private MenuItemDAO menuItemDAO = new MenuItemDAO();
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
-    private MenuItem menuItem;
+    private com.foodbooking.model.MenuItem menuItem;
     private boolean editMode = false;
     private boolean saved = false;
 
@@ -95,7 +94,7 @@ public class MenuItemDialogController implements Initializable {
         }
     }
 
-    public void setMenuItem(MenuItem menuItem) {
+    public void setMenuItem(com.foodbooking.model.MenuItem menuItem) {
         this.menuItem = menuItem;
         Restaurant restaurant = restaurantDAO.getRestaurantById(menuItem.getRestaurantId());
         if (restaurant != null) {
@@ -153,7 +152,7 @@ public class MenuItemDialogController implements Initializable {
                 }
             } else {
                 // Create new menu item
-                MenuItem newMenuItem = new MenuItem(restaurant.getId(), name, description, price, category);
+                com.foodbooking.model.MenuItem newMenuItem = new com.foodbooking.model.MenuItem(restaurant.getId(), name, description, price, category);
                 newMenuItem.setAvailable(availableCheckBox.isSelected());
 
                 if (menuItemDAO.createMenuItem(newMenuItem)) {

@@ -1,7 +1,11 @@
 package com.foodbooking.controller;
 
 import com.foodbooking.dao.*;
-import com.foodbooking.model.*;
+import com.foodbooking.model.Order;
+import com.foodbooking.model.OrderItem;
+import com.foodbooking.model.Restaurant;
+import com.foodbooking.model.User;
+import com.foodbooking.model.UserRole;
 import com.foodbooking.util.AlertHelper;
 import com.foodbooking.util.SessionManager;
 import com.foodbooking.util.ValidationHelper;
@@ -39,7 +43,7 @@ public class OrderDialogController implements Initializable {
     private TextArea notesArea;
 
     @FXML
-    private ComboBox<MenuItem> menuItemComboBox;
+    private ComboBox<com.foodbooking.model.MenuItem> menuItemComboBox;
 
     @FXML
     private TextField quantityField;
@@ -138,28 +142,28 @@ public class OrderDialogController implements Initializable {
     }
 
     private void setupMenuItemComboBox() {
-        menuItemComboBox.setConverter(new StringConverter<MenuItem>() {
+        menuItemComboBox.setConverter(new StringConverter<com.foodbooking.model.MenuItem>() {
             @Override
-            public String toString(MenuItem item) {
+            public String toString(com.foodbooking.model.MenuItem item) {
                 return item != null ? item.getName() + " - " + item.getPrice() + " €" : "";
             }
 
             @Override
-            public MenuItem fromString(String string) {
+            public com.foodbooking.model.MenuItem fromString(String string) {
                 return null;
             }
         });
     }
 
     private void loadMenuItems(int restaurantId) {
-        List<MenuItem> menuItems = menuItemDAO.getAvailableMenuItems(restaurantId);
+        List<com.foodbooking.model.MenuItem> menuItems = menuItemDAO.getAvailableMenuItems(restaurantId);
         menuItemComboBox.getItems().clear();
         menuItemComboBox.getItems().addAll(menuItems);
     }
 
     @FXML
     private void handleAddItem() {
-        MenuItem selectedItem = menuItemComboBox.getValue();
+        com.foodbooking.model.MenuItem selectedItem = menuItemComboBox.getValue();
         String quantityStr = quantityField.getText().trim();
 
         if (selectedItem == null) {
