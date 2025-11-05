@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,6 +48,9 @@ public class RestaurantsTabController implements Initializable {
     @FXML
     private TableColumn<Restaurant, Boolean> activeColumn;
 
+    @FXML
+    private Button addButton;
+
     private RestaurantDAO restaurantDAO = new RestaurantDAO();
     private ObservableList<Restaurant> restaurantsList = FXCollections.observableArrayList();
 
@@ -60,6 +64,13 @@ public class RestaurantsTabController implements Initializable {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
+
+        // Hide "Add" button for non-administrators
+        // Only administrators can add new restaurants
+        if (!SessionManager.getInstance().isAdministrator()) {
+            addButton.setVisible(false);
+            addButton.setManaged(false);
+        }
 
         // Load data
         loadRestaurants();
@@ -87,6 +98,12 @@ public class RestaurantsTabController implements Initializable {
 
     @FXML
     private void handleAdd() {
+        // Only administrators can add new restaurants
+        if (!SessionManager.getInstance().isAdministrator()) {
+            AlertHelper.showError("Klaida", "Tik administratoriai gali pridėti naujus restoranus!");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RestaurantDialog.fxml"));
             Parent root = loader.load();

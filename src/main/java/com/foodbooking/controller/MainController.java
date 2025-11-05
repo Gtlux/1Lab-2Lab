@@ -57,9 +57,7 @@ public class MainController implements Initializable {
                 // Driver sees available orders and their orders
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
             } else if (user.isClient()) {
-                // Client sees restaurants, menu, and their orders
-                addTab("Restoranai", "/fxml/RestaurantsTab.fxml");
-                addTab("Meniu", "/fxml/MenuItemsTab.fxml");
+                // Client sees only their orders (cannot manage restaurants or menu)
                 addTab("Mano užsakymai", "/fxml/OrdersTab.fxml");
             }
         } catch (Exception e) {
