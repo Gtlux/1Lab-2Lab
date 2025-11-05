@@ -45,7 +45,6 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Populate role combo box (exclude ADMINISTRATOR for public registration)
         roleComboBox.getItems().addAll(UserRole.CLIENT, UserRole.RESTAURANT_OWNER, UserRole.DRIVER);
         roleComboBox.setValue(UserRole.CLIENT);
     }
@@ -60,21 +59,18 @@ public class RegisterController implements Initializable {
         String phone = phoneField.getText().trim();
         UserRole role = roleComboBox.getValue();
 
-        // Validation
         String errorMessage = validateInput(username, password, confirmPassword, email, fullName, phone, role);
         if (errorMessage != null) {
             AlertHelper.showError("Validacijos klaida", errorMessage);
             return;
         }
 
-        // Check if username exists
         if (userDAO.getUserByUsername(username) != null) {
             AlertHelper.showError("Klaida", "Vartotojo vardas jau užimtas!");
             return;
         }
 
         try {
-            // Create new user
             User newUser = new User(username, password, email, fullName, phone, role);
 
             if (userDAO.createUser(newUser)) {

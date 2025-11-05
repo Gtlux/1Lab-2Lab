@@ -54,10 +54,8 @@ public class UserDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Populate role combo box
         roleComboBox.getItems().addAll(UserRole.values());
 
-        // Show restaurant combo when RESTAURANT_OWNER is selected
         roleComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == UserRole.RESTAURANT_OWNER) {
                 loadRestaurants();
@@ -109,7 +107,6 @@ public class UserDialogController implements Initializable {
         String phone = phoneField.getText().trim();
         UserRole role = roleComboBox.getValue();
 
-        // Validation
         if (!ValidationHelper.isNotEmpty(username) || !ValidationHelper.isNotEmpty(email) ||
             !ValidationHelper.isNotEmpty(fullName) || !ValidationHelper.isNotEmpty(phone) || role == null) {
             AlertHelper.showError("Klaida", "Užpildykite visus privalomus laukus!");
@@ -133,7 +130,6 @@ public class UserDialogController implements Initializable {
 
         try {
             if (editMode) {
-                // Update existing user
                 user.setUsername(username);
                 if (!password.isEmpty()) {
                     user.setPassword(password);
@@ -162,7 +158,6 @@ public class UserDialogController implements Initializable {
                     AlertHelper.showError("Klaida", "Nepavyko atnaujinti vartotojo!");
                 }
             } else {
-                // Create new user
                 User newUser = new User(username, password, email, fullName, phone, role);
                 newUser.setActive(activeCheckBox.isSelected());
 

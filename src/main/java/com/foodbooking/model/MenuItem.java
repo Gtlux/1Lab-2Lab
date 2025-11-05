@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MenuItem {
     private Integer id;
-    private Integer restaurantId; // Foreign key to Restaurant
+    private Integer restaurantId;
     private String name;
     private String description;
     private BigDecimal price;

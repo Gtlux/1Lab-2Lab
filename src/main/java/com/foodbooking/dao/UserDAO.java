@@ -11,7 +11,6 @@ import java.util.List;
 
 public class UserDAO {
 
-    // CREATE
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (username, password, email, full_name, phone_number, role, restaurant_id, active) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -51,7 +50,6 @@ public class UserDAO {
         return false;
     }
 
-    // READ - Get by ID
     public User getUserById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
@@ -71,7 +69,6 @@ public class UserDAO {
         return null;
     }
 
-    // READ - Get by Username
     public User getUserByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
 
@@ -91,7 +88,6 @@ public class UserDAO {
         return null;
     }
 
-    // READ - Get all users
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users ORDER BY created_at DESC";
@@ -110,7 +106,6 @@ public class UserDAO {
         return users;
     }
 
-    // READ - Get by role
     public List<User> getUsersByRole(UserRole role) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users WHERE role = ? ORDER BY created_at DESC";
@@ -131,7 +126,6 @@ public class UserDAO {
         return users;
     }
 
-    // UPDATE
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET username = ?, email = ?, full_name = ?, phone_number = ?, " +
                      "role = ?, restaurant_id = ?, active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
@@ -162,7 +156,6 @@ public class UserDAO {
         return false;
     }
 
-    // UPDATE - Update password
     public boolean updatePassword(int userId, String newPassword) {
         String sql = "UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
 
@@ -180,7 +173,6 @@ public class UserDAO {
         return false;
     }
 
-    // DELETE
     public boolean deleteUser(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
 
@@ -196,7 +188,6 @@ public class UserDAO {
         return false;
     }
 
-    // Authentication
     public User authenticate(String username, String password) {
         User user = getUserByUsername(username);
         if (user != null && checkPassword(password, user.getPassword())) {
@@ -205,7 +196,6 @@ public class UserDAO {
         return null;
     }
 
-    // Helper methods
     private User extractUserFromResultSet(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));

@@ -28,13 +28,11 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        // Validation
         if (username.isEmpty() || password.isEmpty()) {
             AlertHelper.showError("Klaida", "Užpildykite visus laukus!");
             return;
         }
 
-        // Test database connection
         if (!DatabaseConnection.testConnection()) {
             AlertHelper.showError("Duomenų bazės klaida",
                 "Nepavyko prisijungti prie duomenų bazės!\n\n" +
@@ -46,7 +44,6 @@ public class LoginController {
         }
 
         try {
-            // Authenticate user
             User user = userDAO.authenticate(username, password);
 
             if (user != null) {
@@ -55,10 +52,8 @@ public class LoginController {
                     return;
                 }
 
-                // Set current user in session
                 SessionManager.getInstance().setCurrentUser(user);
 
-                // Load main window
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
                 Parent root = loader.load();
 

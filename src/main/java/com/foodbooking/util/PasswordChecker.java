@@ -8,10 +8,8 @@ import org.mindrot.jbcrypt.BCrypt;
 public class PasswordChecker {
 
     public static void main(String[] args) {
-        // Test password
         String plainPassword = "password123";
 
-        // Hash from schema.sql
         String hashFromDatabase = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
         System.out.println("Testing password verification...");

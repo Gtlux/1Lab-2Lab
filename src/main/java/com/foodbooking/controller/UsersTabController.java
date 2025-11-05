@@ -59,7 +59,6 @@ public class UsersTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -69,10 +68,8 @@ public class UsersTabController implements Initializable {
         activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
 
-        // Populate role filter combo box
         roleFilterComboBox.getItems().addAll(UserRole.values());
 
-        // Load data
         loadUsers();
     }
 

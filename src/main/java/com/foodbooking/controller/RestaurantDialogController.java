@@ -56,7 +56,6 @@ public class RestaurantDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Setup owner combo box
         ownerComboBox.setConverter(new StringConverter<User>() {
             @Override
             public String toString(User user) {
@@ -69,7 +68,6 @@ public class RestaurantDialogController implements Initializable {
             }
         });
 
-        // Hide owner selection for restaurant owners
         if (SessionManager.getInstance().isRestaurantOwner()) {
             ownerBox.setVisible(false);
             ownerBox.setManaged(false);
@@ -113,7 +111,6 @@ public class RestaurantDialogController implements Initializable {
         String email = emailField.getText().trim();
         String description = descriptionArea.getText().trim();
 
-        // Validation
         if (!ValidationHelper.isNotEmpty(name) || !ValidationHelper.isNotEmpty(address) ||
             !ValidationHelper.isNotEmpty(phone) || !ValidationHelper.isNotEmpty(email)) {
             AlertHelper.showError("Klaida", "Užpildykite visus privalomus laukus!");
@@ -143,7 +140,6 @@ public class RestaurantDialogController implements Initializable {
 
         try {
             if (editMode) {
-                // Update existing restaurant
                 restaurant.setName(name);
                 restaurant.setAddress(address);
                 restaurant.setPhoneNumber(phone);
@@ -159,7 +155,6 @@ public class RestaurantDialogController implements Initializable {
                     AlertHelper.showError("Klaida", "Nepavyko atnaujinti restorano!");
                 }
             } else {
-                // Create new restaurant
                 Restaurant newRestaurant = new Restaurant(name, address, phone, email, description, ownerId);
                 newRestaurant.setActive(activeCheckBox.isSelected());
 

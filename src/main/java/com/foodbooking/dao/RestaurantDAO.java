@@ -9,7 +9,6 @@ import java.util.List;
 
 public class RestaurantDAO {
 
-    // CREATE
     public boolean createRestaurant(Restaurant restaurant) {
         String sql = "INSERT INTO restaurants (name, address, phone_number, email, description, owner_id, active) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -42,7 +41,6 @@ public class RestaurantDAO {
         return false;
     }
 
-    // READ - Get by ID
     public Restaurant getRestaurantById(int id) {
         String sql = "SELECT * FROM restaurants WHERE id = ?";
 
@@ -62,7 +60,6 @@ public class RestaurantDAO {
         return null;
     }
 
-    // READ - Get all restaurants
     public List<Restaurant> getAllRestaurants() {
         List<Restaurant> restaurants = new ArrayList<>();
         String sql = "SELECT * FROM restaurants ORDER BY name";
@@ -81,7 +78,6 @@ public class RestaurantDAO {
         return restaurants;
     }
 
-    // READ - Get active restaurants
     public List<Restaurant> getActiveRestaurants() {
         List<Restaurant> restaurants = new ArrayList<>();
         String sql = "SELECT * FROM restaurants WHERE active = true ORDER BY name";
@@ -100,7 +96,6 @@ public class RestaurantDAO {
         return restaurants;
     }
 
-    // READ - Get by owner ID
     public List<Restaurant> getRestaurantsByOwnerId(int ownerId) {
         List<Restaurant> restaurants = new ArrayList<>();
         String sql = "SELECT * FROM restaurants WHERE owner_id = ? ORDER BY name";
@@ -121,7 +116,6 @@ public class RestaurantDAO {
         return restaurants;
     }
 
-    // UPDATE
     public boolean updateRestaurant(Restaurant restaurant) {
         String sql = "UPDATE restaurants SET name = ?, address = ?, phone_number = ?, email = ?, " +
                      "description = ?, active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
@@ -145,7 +139,6 @@ public class RestaurantDAO {
         return false;
     }
 
-    // DELETE
     public boolean deleteRestaurant(int id) {
         String sql = "DELETE FROM restaurants WHERE id = ?";
 
@@ -161,7 +154,6 @@ public class RestaurantDAO {
         return false;
     }
 
-    // Helper method
     private Restaurant extractRestaurantFromResultSet(ResultSet rs) throws SQLException {
         Restaurant restaurant = new Restaurant();
         restaurant.setId(rs.getInt("id"));

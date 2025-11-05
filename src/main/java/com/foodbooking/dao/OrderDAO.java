@@ -10,7 +10,6 @@ import java.util.List;
 
 public class OrderDAO {
 
-    // CREATE
     public boolean createOrder(Order order) {
         String sql = "INSERT INTO orders (client_id, restaurant_id, driver_id, status, total_amount, " +
                      "delivery_address, notes) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -49,7 +48,6 @@ public class OrderDAO {
         return false;
     }
 
-    // READ - Get by ID
     public Order getOrderById(int id) {
         String sql = "SELECT o.*, " +
                      "u1.full_name as client_name, " +
@@ -77,7 +75,6 @@ public class OrderDAO {
         return null;
     }
 
-    // READ - Get all orders
     public List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, " +
@@ -104,7 +101,6 @@ public class OrderDAO {
         return orders;
     }
 
-    // READ - Get by client ID
     public List<Order> getOrdersByClientId(int clientId) {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, " +
@@ -134,7 +130,6 @@ public class OrderDAO {
         return orders;
     }
 
-    // READ - Get by restaurant ID
     public List<Order> getOrdersByRestaurantId(int restaurantId) {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, " +
@@ -164,7 +159,6 @@ public class OrderDAO {
         return orders;
     }
 
-    // READ - Get by driver ID
     public List<Order> getOrdersByDriverId(int driverId) {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, " +
@@ -194,7 +188,6 @@ public class OrderDAO {
         return orders;
     }
 
-    // READ - Get available orders for drivers
     public List<Order> getAvailableOrdersForDrivers() {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, " +
@@ -222,7 +215,6 @@ public class OrderDAO {
         return orders;
     }
 
-    // UPDATE
     public boolean updateOrder(Order order) {
         String sql = "UPDATE orders SET client_id = ?, restaurant_id = ?, driver_id = ?, status = ?, " +
                      "total_amount = ?, delivery_address = ?, notes = ?, delivered_at = ?, " +
@@ -261,7 +253,6 @@ public class OrderDAO {
         return false;
     }
 
-    // UPDATE - Assign driver
     public boolean assignDriver(int orderId, int driverId) {
         String sql = "UPDATE orders SET driver_id = ?, status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
 
@@ -280,7 +271,6 @@ public class OrderDAO {
         return false;
     }
 
-    // DELETE
     public boolean deleteOrder(int id) {
         String sql = "DELETE FROM orders WHERE id = ?";
 
@@ -296,7 +286,6 @@ public class OrderDAO {
         return false;
     }
 
-    // Helper method
     private Order extractOrderFromResultSet(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getInt("id"));
@@ -320,7 +309,6 @@ public class OrderDAO {
             order.setDeliveredAt(deliveredAt.toLocalDateTime());
         }
 
-        // Additional display fields
         order.setClientName(rs.getString("client_name"));
         order.setRestaurantName(rs.getString("restaurant_name"));
         order.setDriverName(rs.getString("driver_name"));

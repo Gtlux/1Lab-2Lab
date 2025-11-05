@@ -66,19 +66,16 @@ public class ShoppingCartTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table columns
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         subtotalColumn.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
 
-        // Set default delivery address from user profile
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser != null && currentUser.getFullName() != null) {
             deliveryAddressField.setPromptText("Įveskite pristatymo adresą...");
         }
 
-        // Load cart
         loadCart();
     }
 
@@ -95,7 +92,6 @@ public class ShoppingCartTabController implements Initializable {
         } else {
             cartStatusLabel.setText(String.format("Prekių kiekis: %d", cart.getItemCount()));
 
-            // Load restaurant info
             Restaurant restaurant = restaurantDAO.getRestaurantById(cart.getRestaurant().getId());
             if (restaurant != null) {
                 restaurantInfoBox.setVisible(true);
@@ -104,15 +100,12 @@ public class ShoppingCartTabController implements Initializable {
                 restaurantAddressLabel.setText("Adresas: " + restaurant.getAddress());
             }
 
-            // Load cart items
             cartItems.clear();
             cartItems.addAll(cart.getItems());
             cartTable.setItems(cartItems);
 
-            // Update total
             totalLabel.setText(String.format("%.2f €", cart.getTotal()));
 
-            // Enable checkout if delivery address is provided
             checkoutButton.setDisable(false);
         }
     }
@@ -209,7 +202,6 @@ public class ShoppingCartTabController implements Initializable {
 
         String notes = notesArea.getText();
 
-        // Confirm order
         String confirmMessage = String.format(
             "Patvirtinti užsakymą?\n\n" +
             "Restoranas: %s\n" +
@@ -227,7 +219,6 @@ public class ShoppingCartTabController implements Initializable {
         }
 
         try {
-            // Create order
             Order order = new Order(
                 SessionManager.getInstance().getCurrentUser().getId(),
                 cart.getRestaurant().getId(),
@@ -236,16 +227,13 @@ public class ShoppingCartTabController implements Initializable {
             order.setNotes(notes);
             order.setStatus(OrderStatus.PENDING);
 
-            // Save order
             if (!orderDAO.createOrder(order)) {
                 AlertHelper.showError("Klaida", "Nepavyko sukurti užsakymo!");
                 return;
             }
 
-            // Get the generated order ID
             int orderId = order.getId();
 
-            // Save order items
             for (CartItem cartItem : cart.getItems()) {
                 OrderItem orderItem = new OrderItem(
                     orderId,
@@ -257,15 +245,12 @@ public class ShoppingCartTabController implements Initializable {
                 orderItemDAO.createOrderItem(orderItem);
             }
 
-            // Update order total
             order.calculateTotal();
             orderDAO.updateOrder(order);
 
-            // Clear cart
             SessionManager.getInstance().clearCart();
             loadCart();
 
-            // Clear form
             deliveryAddressField.clear();
             notesArea.clear();
 

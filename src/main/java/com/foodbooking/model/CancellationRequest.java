@@ -15,12 +15,11 @@ public class CancellationRequest {
     private Integer clientId;
     private String reason;
     private CancellationStatus status;
-    private Integer reviewedBy; // Restaurant owner or admin who reviewed
-    private String reviewNote; // Response from owner/admin
+    private Integer reviewedBy;
+    private String reviewNote;
     private LocalDateTime createdAt;
     private LocalDateTime reviewedAt;
 
-    // Display fields
     private String clientName;
     private String reviewerName;
     private Integer restaurantId;

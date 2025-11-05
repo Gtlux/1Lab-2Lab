@@ -12,7 +12,6 @@ public class DatabaseConnection {
     private static Connection connection = null;
 
     private DatabaseConnection() {
-        // Private constructor to prevent instantiation
     }
 
     public static Connection getConnection() throws SQLException {

@@ -66,7 +66,6 @@ public class CancellationRequestsTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         restaurantColumn.setCellValueFactory(new PropertyValueFactory<>("restaurantName"));
@@ -76,11 +75,9 @@ public class CancellationRequestsTabController implements Initializable {
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         reviewerColumn.setCellValueFactory(new PropertyValueFactory<>("reviewerName"));
 
-        // Add listener to radio buttons
         pendingRadio.setOnAction(e -> loadRequests());
         allRadio.setOnAction(e -> loadRequests());
 
-        // Load data
         loadRequests();
     }
 
@@ -89,11 +86,9 @@ public class CancellationRequestsTabController implements Initializable {
             List<CancellationRequest> requests;
 
             if (pendingRadio.isSelected()) {
-                // Load only pending requests
                 if (SessionManager.getInstance().isAdministrator()) {
                     requests = cancellationRequestDAO.getAllPendingRequests();
                 } else if (SessionManager.getInstance().isRestaurantOwner()) {
-                    // Get owner's restaurant IDs
                     List<Restaurant> ownRestaurants = restaurantDAO.getRestaurantsByOwnerId(
                         SessionManager.getInstance().getCurrentUser().getId());
 
@@ -105,7 +100,6 @@ public class CancellationRequestsTabController implements Initializable {
                     requests = FXCollections.observableArrayList();
                 }
             } else {
-                // Load all requests (would need a new DAO method for this)
                 requests = cancellationRequestDAO.getAllPendingRequests();
             }
 
@@ -131,7 +125,6 @@ public class CancellationRequestsTabController implements Initializable {
             return;
         }
 
-        // Show confirmation dialog with note option
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Patvirtinti atšaukimą");
         dialog.setHeaderText(String.format(
@@ -141,13 +134,11 @@ public class CancellationRequestsTabController implements Initializable {
 
         dialog.showAndWait().ifPresent(note -> {
             try {
-                // Approve cancellation request
                 if (cancellationRequestDAO.approveCancellationRequest(
                         selected.getId(),
                         SessionManager.getInstance().getCurrentUser().getId(),
                         note.trim().isEmpty() ? "Patvirtinta" : note.trim())) {
 
-                    // Update order status to CANCELLED
                     Order order = orderDAO.getOrderById(selected.getOrderId());
                     if (order != null) {
                         order.updateStatus(OrderStatus.CANCELLED);
@@ -182,7 +173,6 @@ public class CancellationRequestsTabController implements Initializable {
             return;
         }
 
-        // Show confirmation dialog with reason requirement
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Atmesti atšaukimą");
         dialog.setHeaderText(String.format(
@@ -225,7 +215,6 @@ public class CancellationRequestsTabController implements Initializable {
             return;
         }
 
-        // Show detailed information
         StringBuilder info = new StringBuilder();
         info.append("=== ATŠAUKIMO UŽKLAUSA #").append(selected.getId()).append(" ===\n\n");
         info.append("Užsakymas: #").append(selected.getOrderId()).append("\n");
@@ -258,7 +247,6 @@ public class CancellationRequestsTabController implements Initializable {
             return;
         }
 
-        // Only allow deletion of approved or rejected requests
         if (selected.getStatus() == CancellationStatus.PENDING) {
             AlertHelper.showWarning("Įspėjimas",
                 "Negalima ištrinti laukiančios užklausos!\n\n" +

@@ -25,7 +25,6 @@ public class ShoppingCart {
     }
 
     public void addItem(MenuItem menuItem, int quantity) {
-        // Check if restaurant matches
         if (restaurant == null) {
             restaurant = new Restaurant();
             restaurant.setId(menuItem.getRestaurantId());
@@ -34,7 +33,6 @@ public class ShoppingCart {
                 "Negalite pridėti patiekalų iš skirtingų restoranų! Pirma išvalykite krepšelį.");
         }
 
-        // Check if item already exists in cart
         for (CartItem cartItem : items) {
             if (cartItem.getMenuItem().getId().equals(menuItem.getId())) {
                 cartItem.setQuantity(cartItem.getQuantity() + quantity);
@@ -42,7 +40,6 @@ public class ShoppingCart {
             }
         }
 
-        // Add new item
         items.add(new CartItem(menuItem, quantity));
     }
 

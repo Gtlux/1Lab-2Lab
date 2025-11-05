@@ -35,7 +35,6 @@ public class MainController implements Initializable {
             userInfoLabel.setText("Prisijungęs: " + currentUser.getFullName());
             roleLabel.setText("Rolė: " + currentUser.getRole().getDisplayName());
 
-            // Load tabs based on user role
             loadTabs(currentUser);
         }
     }
@@ -43,23 +42,19 @@ public class MainController implements Initializable {
     private void loadTabs(User user) {
         try {
             if (user.isAdministrator()) {
-                // Admin sees all tabs
                 addTab("Vartotojai", "/fxml/UsersTab.fxml");
                 addTab("Restoranai", "/fxml/RestaurantsTab.fxml");
                 addTab("Meniu", "/fxml/MenuItemsTab.fxml");
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
                 addTab("Atšaukimo užklausos", "/fxml/CancellationRequestsTab.fxml");
             } else if (user.isRestaurantOwner()) {
-                // Restaurant owner sees their restaurant's menu, orders, and cancellation requests
                 addTab("Mano restoranas", "/fxml/RestaurantsTab.fxml");
                 addTab("Meniu", "/fxml/MenuItemsTab.fxml");
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
                 addTab("Atšaukimo užklausos", "/fxml/CancellationRequestsTab.fxml");
             } else if (user.isDriver()) {
-                // Driver sees available orders and their orders
                 addTab("Užsakymai", "/fxml/OrdersTab.fxml");
             } else if (user.isClient()) {
-                // Client can view restaurants and menu (read-only), use shopping cart, and manage their orders
                 addTab("Restoranai", "/fxml/RestaurantsTab.fxml");
                 addTab("Meniu", "/fxml/MenuItemsTab.fxml");
                 addTab("🛒 Krepšelis", "/fxml/ShoppingCartTab.fxml");

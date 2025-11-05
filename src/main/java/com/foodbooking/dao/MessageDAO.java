@@ -9,7 +9,6 @@ import java.util.List;
 
 public class MessageDAO {
 
-    // CREATE
     public boolean createMessage(Message message) {
         String sql = "INSERT INTO messages (order_id, sender_id, receiver_id, content, is_read) " +
                      "VALUES (?, ?, ?, ?, ?)";
@@ -40,7 +39,6 @@ public class MessageDAO {
         return false;
     }
 
-    // READ - Get by ID
     public Message getMessageById(int id) {
         String sql = "SELECT m.*, " +
                      "u1.full_name as sender_name, " +
@@ -66,7 +64,6 @@ public class MessageDAO {
         return null;
     }
 
-    // READ - Get by order ID
     public List<Message> getMessagesByOrderId(int orderId) {
         List<Message> messages = new ArrayList<>();
         String sql = "SELECT m.*, " +
@@ -94,7 +91,6 @@ public class MessageDAO {
         return messages;
     }
 
-    // READ - Get by user ID (as sender or receiver)
     public List<Message> getMessagesByUserId(int userId) {
         List<Message> messages = new ArrayList<>();
         String sql = "SELECT m.*, " +
@@ -123,7 +119,6 @@ public class MessageDAO {
         return messages;
     }
 
-    // UPDATE
     public boolean updateMessage(Message message) {
         String sql = "UPDATE messages SET order_id = ?, sender_id = ?, receiver_id = ?, " +
                      "content = ?, is_read = ? WHERE id = ?";
@@ -146,7 +141,6 @@ public class MessageDAO {
         return false;
     }
 
-    // UPDATE - Mark as read
     public boolean markAsRead(int messageId) {
         String sql = "UPDATE messages SET is_read = true WHERE id = ?";
 
@@ -162,7 +156,6 @@ public class MessageDAO {
         return false;
     }
 
-    // DELETE
     public boolean deleteMessage(int id) {
         String sql = "DELETE FROM messages WHERE id = ?";
 
@@ -178,7 +171,6 @@ public class MessageDAO {
         return false;
     }
 
-    // Helper method
     private Message extractMessageFromResultSet(ResultSet rs) throws SQLException {
         Message message = new Message();
         message.setId(rs.getInt("id"));
@@ -189,7 +181,6 @@ public class MessageDAO {
         message.setSentAt(rs.getTimestamp("sent_at").toLocalDateTime());
         message.setRead(rs.getBoolean("is_read"));
 
-        // Additional display fields
         message.setSenderName(rs.getString("sender_name"));
         message.setReceiverName(rs.getString("receiver_name"));
 

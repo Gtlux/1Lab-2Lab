@@ -11,16 +11,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Review {
     private Integer id;
-    private Integer reviewerId; // User who wrote the review
-    private ReviewedEntityType reviewedEntityType; // RESTAURANT, DRIVER, CLIENT
-    private Integer reviewedEntityId; // ID of restaurant, driver, or client
-    private Integer orderId; // Related order (optional)
-    private Integer rating; // 1-5 stars
+    private Integer reviewerId;
+    private ReviewedEntityType reviewedEntityType;
+    private Integer reviewedEntityId;
+    private Integer orderId;
+    private Integer rating;
     private String comment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Additional display fields
     private String reviewerName;
     private String reviewedEntityName;
 

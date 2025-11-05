@@ -9,7 +9,6 @@ import java.util.List;
 
 public class OrderItemDAO {
 
-    // CREATE
     public boolean createOrderItem(OrderItem orderItem) {
         String sql = "INSERT INTO order_items (order_id, menu_item_id, menu_item_name, price, quantity, subtotal, notes) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -42,7 +41,6 @@ public class OrderItemDAO {
         return false;
     }
 
-    // READ - Get by ID
     public OrderItem getOrderItemById(int id) {
         String sql = "SELECT * FROM order_items WHERE id = ?";
 
@@ -62,7 +60,6 @@ public class OrderItemDAO {
         return null;
     }
 
-    // READ - Get by order ID
     public List<OrderItem> getOrderItemsByOrderId(int orderId) {
         List<OrderItem> orderItems = new ArrayList<>();
         String sql = "SELECT * FROM order_items WHERE order_id = ?";
@@ -83,7 +80,6 @@ public class OrderItemDAO {
         return orderItems;
     }
 
-    // UPDATE
     public boolean updateOrderItem(OrderItem orderItem) {
         String sql = "UPDATE order_items SET order_id = ?, menu_item_id = ?, menu_item_name = ?, " +
                      "price = ?, quantity = ?, subtotal = ?, notes = ? WHERE id = ?";
@@ -108,7 +104,6 @@ public class OrderItemDAO {
         return false;
     }
 
-    // DELETE
     public boolean deleteOrderItem(int id) {
         String sql = "DELETE FROM order_items WHERE id = ?";
 
@@ -124,7 +119,6 @@ public class OrderItemDAO {
         return false;
     }
 
-    // DELETE - Delete all order items for an order
     public boolean deleteOrderItemsByOrderId(int orderId) {
         String sql = "DELETE FROM order_items WHERE order_id = ?";
 
@@ -140,7 +134,6 @@ public class OrderItemDAO {
         return false;
     }
 
-    // Helper method
     private OrderItem extractOrderItemFromResultSet(ResultSet rs) throws SQLException {
         OrderItem orderItem = new OrderItem();
         orderItem.setId(rs.getInt("id"));

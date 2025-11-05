@@ -14,9 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Order {
     private Integer id;
-    private Integer clientId; // Foreign key to User (client)
-    private Integer restaurantId; // Foreign key to Restaurant
-    private Integer driverId; // Foreign key to User (driver), nullable
+    private Integer clientId;
+    private Integer restaurantId;
+    private Integer driverId;
     private OrderStatus status;
     private BigDecimal totalAmount;
     private String deliveryAddress;
@@ -25,10 +25,8 @@ public class Order {
     private LocalDateTime updatedAt;
     private LocalDateTime deliveredAt;
 
-    // Composition: Order has OrderItems
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    // Additional fields for display
     private String clientName;
     private String restaurantName;
     private String driverName;

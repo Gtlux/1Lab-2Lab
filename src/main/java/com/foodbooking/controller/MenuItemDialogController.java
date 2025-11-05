@@ -52,7 +52,6 @@ public class MenuItemDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Setup restaurant combo box
         restaurantComboBox.setConverter(new StringConverter<Restaurant>() {
             @Override
             public String toString(Restaurant restaurant) {
@@ -73,7 +72,6 @@ public class MenuItemDialogController implements Initializable {
         if (SessionManager.getInstance().isRestaurantOwner()) {
             restaurants = restaurantDAO.getRestaurantsByOwnerId(
                     SessionManager.getInstance().getCurrentUser().getId());
-            // Hide restaurant selection if owner has only one restaurant
             if (restaurants.size() == 1) {
                 restaurantComboBox.setValue(restaurants.get(0));
                 restaurantBox.setVisible(false);
@@ -89,7 +87,6 @@ public class MenuItemDialogController implements Initializable {
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
         if (editMode) {
-            // Disable restaurant selection in edit mode
             restaurantComboBox.setDisable(true);
         }
     }
@@ -115,7 +112,6 @@ public class MenuItemDialogController implements Initializable {
         String priceStr = priceField.getText().trim();
         String category = categoryField.getText().trim();
 
-        // Validation
         if (restaurant == null) {
             AlertHelper.showError("Klaida", "Pasirinkite restoraną!");
             return;
@@ -136,7 +132,6 @@ public class MenuItemDialogController implements Initializable {
 
         try {
             if (editMode) {
-                // Update existing menu item
                 menuItem.setName(name);
                 menuItem.setDescription(description);
                 menuItem.setPrice(price);
@@ -151,7 +146,6 @@ public class MenuItemDialogController implements Initializable {
                     AlertHelper.showError("Klaida", "Nepavyko atnaujinti meniu elemento!");
                 }
             } else {
-                // Create new menu item
                 com.foodbooking.model.MenuItem newMenuItem = new com.foodbooking.model.MenuItem(restaurant.getId(), name, description, price, category);
                 newMenuItem.setAvailable(availableCheckBox.isSelected());
 

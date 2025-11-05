@@ -94,7 +94,6 @@ public class MenuItemsTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -102,7 +101,6 @@ public class MenuItemsTabController implements Initializable {
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         availableColumn.setCellValueFactory(new PropertyValueFactory<>("available"));
 
-        // Custom cell value factory for restaurant name
         restaurantColumn.setCellValueFactory(cellData -> {
             Integer restaurantId = cellData.getValue().getRestaurantId();
             String restaurantName = restaurantNamesCache.computeIfAbsent(restaurantId, id -> {
@@ -112,7 +110,6 @@ public class MenuItemsTabController implements Initializable {
             return new javafx.beans.property.SimpleStringProperty(restaurantName);
         });
 
-        // Setup restaurant filter combo box
         restaurantFilterComboBox.setConverter(new StringConverter<Restaurant>() {
             @Override
             public String toString(Restaurant restaurant) {
@@ -125,7 +122,6 @@ public class MenuItemsTabController implements Initializable {
             }
         });
 
-        // Hide all editing buttons for clients (they can only view menu)
         if (SessionManager.getInstance().isClient()) {
             addButton.setVisible(false);
             addButton.setManaged(false);
@@ -133,7 +129,6 @@ public class MenuItemsTabController implements Initializable {
             editButton.setManaged(false);
             deleteButton.setVisible(false);
             deleteButton.setManaged(false);
-            // Show add to cart button for clients only
             addToCartButton.setVisible(true);
             addToCartButton.setManaged(true);
         }
@@ -143,10 +138,8 @@ public class MenuItemsTabController implements Initializable {
     }
 
     private void setupFilters() {
-        // Setup restaurant filter
         loadRestaurantFilter();
 
-        // Setup category filter (must match database categories exactly)
         categoryFilterComboBox.getItems().addAll(
             "Visi",
             "Pica",
@@ -163,7 +156,6 @@ public class MenuItemsTabController implements Initializable {
         );
         categoryFilterComboBox.setValue("Visi");
 
-        // Setup availability filter
         availabilityFilterComboBox.getItems().addAll("Visi", "Prieinami", "Neprieinami");
         availabilityFilterComboBox.setValue("Visi");
     }
@@ -184,7 +176,6 @@ public class MenuItemsTabController implements Initializable {
         try {
             List<com.foodbooking.model.MenuItem> menuItems;
             if (SessionManager.getInstance().isRestaurantOwner()) {
-                // Restaurant owners see only their restaurant's menu items
                 List<Restaurant> ownRestaurants = restaurantDAO.getRestaurantsByOwnerId(
                         SessionManager.getInstance().getCurrentUser().getId());
                 menuItems = FXCollections.observableArrayList();
@@ -205,7 +196,6 @@ public class MenuItemsTabController implements Initializable {
 
     @FXML
     private void handleAdd() {
-        // Clients cannot add menu items
         if (SessionManager.getInstance().isClient()) {
             AlertHelper.showError("Klaida", "Klientai negali pridėti meniu elementų!");
             return;
@@ -241,13 +231,11 @@ public class MenuItemsTabController implements Initializable {
             return;
         }
 
-        // Clients cannot edit menu items
         if (SessionManager.getInstance().isClient()) {
             AlertHelper.showError("Klaida", "Klientai negali redaguoti meniu elementų!");
             return;
         }
 
-        // Restaurant owners can only edit their own menu items
         if (SessionManager.getInstance().isRestaurantOwner()) {
             Restaurant restaurant = restaurantDAO.getRestaurantById(selected.getRestaurantId());
             if (restaurant == null || !restaurant.getOwnerId().equals(
@@ -288,13 +276,11 @@ public class MenuItemsTabController implements Initializable {
             return;
         }
 
-        // Clients cannot delete menu items
         if (SessionManager.getInstance().isClient()) {
             AlertHelper.showError("Klaida", "Klientai negali ištrinti meniu elementų!");
             return;
         }
 
-        // Restaurant owners can only delete their own menu items
         if (SessionManager.getInstance().isRestaurantOwner()) {
             Restaurant restaurant = restaurantDAO.getRestaurantById(selected.getRestaurantId());
             if (restaurant == null || !restaurant.getOwnerId().equals(
@@ -328,7 +314,6 @@ public class MenuItemsTabController implements Initializable {
     @FXML
     private void handleFilter() {
         try {
-            // Start with all menu items based on user role
             List<com.foodbooking.model.MenuItem> menuItems;
             if (SessionManager.getInstance().isRestaurantOwner()) {
                 List<Restaurant> ownRestaurants = restaurantDAO.getRestaurantsByOwnerId(
@@ -341,37 +326,31 @@ public class MenuItemsTabController implements Initializable {
                 menuItems = menuItemDAO.getAllMenuItems();
             }
 
-            // Apply filters
             List<com.foodbooking.model.MenuItem> filteredItems = new ArrayList<>(menuItems);
 
-            // Filter by restaurant
             Restaurant selectedRestaurant = restaurantFilterComboBox.getValue();
             if (selectedRestaurant != null) {
                 filteredItems.removeIf(item -> !item.getRestaurantId().equals(selectedRestaurant.getId()));
             }
 
-            // Filter by category
             String selectedCategory = categoryFilterComboBox.getValue();
             if (selectedCategory != null && !selectedCategory.equals("Visi")) {
                 filteredItems.removeIf(item -> item.getCategory() == null ||
                     !item.getCategory().equalsIgnoreCase(selectedCategory));
             }
 
-            // Filter by availability
             String selectedAvailability = availabilityFilterComboBox.getValue();
             if (selectedAvailability != null && !selectedAvailability.equals("Visi")) {
                 boolean available = selectedAvailability.equals("Prieinami");
                 filteredItems.removeIf(item -> item.isAvailable() != available);
             }
 
-            // Filter by name
             String nameFilter = nameFilterField.getText();
             if (nameFilter != null && !nameFilter.trim().isEmpty()) {
                 String lowerCaseFilter = nameFilter.toLowerCase().trim();
                 filteredItems.removeIf(item -> !item.getName().toLowerCase().contains(lowerCaseFilter));
             }
 
-            // Filter by price range
             String minPriceText = minPriceField.getText();
             String maxPriceText = maxPriceField.getText();
 
@@ -395,7 +374,6 @@ public class MenuItemsTabController implements Initializable {
                 }
             }
 
-            // Update table
             menuItemsList.clear();
             menuItemsList.addAll(filteredItems);
             menuItemsTable.setItems(menuItemsList);
@@ -431,7 +409,6 @@ public class MenuItemsTabController implements Initializable {
             return;
         }
 
-        // Ask for quantity
         TextInputDialog dialog = new TextInputDialog("1");
         dialog.setTitle("Kiekis");
         dialog.setHeaderText("Pridėti į krepšelį: " + selected.getName());
@@ -445,7 +422,6 @@ public class MenuItemsTabController implements Initializable {
                     return;
                 }
 
-                // Add to cart
                 try {
                     SessionManager.getInstance().getShoppingCart().addItem(selected, quantity);
                     AlertHelper.showSuccess("Sėkmė",

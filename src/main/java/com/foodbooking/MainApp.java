@@ -10,7 +10,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Load login screen
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
         Parent root = loader.load();
 
@@ -23,7 +22,6 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
-        // Cleanup on application exit
         com.foodbooking.util.DatabaseConnection.closeConnection();
     }
 

@@ -77,7 +77,6 @@ public class OrderDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Setup table columns
         itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
         itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         itemQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -85,18 +84,15 @@ public class OrderDialogController implements Initializable {
 
         orderItemsTable.setItems(orderItems);
 
-        // Setup combo boxes
         setupClientComboBox();
         setupRestaurantComboBox();
         setupMenuItemComboBox();
 
-        // Hide client selection for clients (they can only order for themselves)
         if (SessionManager.getInstance().isClient()) {
             clientBox.setVisible(false);
             clientBox.setManaged(false);
         }
 
-        // Default quantity
         quantityField.setText("1");
     }
 
@@ -133,7 +129,6 @@ public class OrderDialogController implements Initializable {
         List<Restaurant> restaurants = restaurantDAO.getActiveRestaurants();
         restaurantComboBox.getItems().addAll(restaurants);
 
-        // Load menu items when restaurant is selected
         restaurantComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 loadMenuItems(newVal.getId());
@@ -178,9 +173,8 @@ public class OrderDialogController implements Initializable {
 
         int quantity = Integer.parseInt(quantityStr);
 
-        // Create order item
         OrderItem orderItem = new OrderItem(
-                null, // order ID will be set when saving
+                null,
                 selectedItem.getId(),
                 selectedItem.getName(),
                 selectedItem.getPrice(),
@@ -190,7 +184,6 @@ public class OrderDialogController implements Initializable {
         orderItems.add(orderItem);
         updateTotal();
 
-        // Reset fields
         menuItemComboBox.setValue(null);
         quantityField.setText("1");
     }
@@ -219,7 +212,6 @@ public class OrderDialogController implements Initializable {
         Restaurant restaurant = restaurantComboBox.getValue();
         String deliveryAddress = deliveryAddressField.getText().trim();
 
-        // Validation
         if (restaurant == null) {
             AlertHelper.showError("Klaida", "Pasirinkite restoraną!");
             return;
@@ -247,14 +239,12 @@ public class OrderDialogController implements Initializable {
         }
 
         try {
-            // Create order
             Order order = new Order(clientId, restaurant.getId(), deliveryAddress);
             order.setNotes(notesArea.getText().trim());
             order.setOrderItems(new ArrayList<>(orderItems));
             order.calculateTotal();
 
             if (orderDAO.createOrder(order)) {
-                // Save order items
                 boolean allItemsSaved = true;
                 for (OrderItem item : orderItems) {
                     item.setOrderId(order.getId());

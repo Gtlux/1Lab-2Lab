@@ -18,12 +18,11 @@ public class Restaurant {
     private String phoneNumber;
     private String email;
     private String description;
-    private Integer ownerId; // Foreign key to User
+    private Integer ownerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean active;
 
-    // Composition: Restaurant has MenuItems
     private List<MenuItem> menuItems = new ArrayList<>();
 
     public Restaurant(String name, String address, String phoneNumber, String email, String description, Integer ownerId) {

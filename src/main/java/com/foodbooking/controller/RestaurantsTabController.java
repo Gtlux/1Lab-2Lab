@@ -62,7 +62,6 @@ public class RestaurantsTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -71,8 +70,6 @@ public class RestaurantsTabController implements Initializable {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
 
-        // Hide "Add" and "Delete" buttons for non-administrators
-        // Only administrators can add new restaurants or delete them
         if (!SessionManager.getInstance().isAdministrator()) {
             addButton.setVisible(false);
             addButton.setManaged(false);
@@ -80,13 +77,11 @@ public class RestaurantsTabController implements Initializable {
             deleteButton.setManaged(false);
         }
 
-        // Hide "Edit" button for clients (they can only view)
         if (SessionManager.getInstance().isClient()) {
             editButton.setVisible(false);
             editButton.setManaged(false);
         }
 
-        // Load data
         loadRestaurants();
     }
 
@@ -94,11 +89,9 @@ public class RestaurantsTabController implements Initializable {
         try {
             List<Restaurant> restaurants;
             if (SessionManager.getInstance().isRestaurantOwner()) {
-                // Restaurant owners see only their restaurants
                 restaurants = restaurantDAO.getRestaurantsByOwnerId(
                         SessionManager.getInstance().getCurrentUser().getId());
             } else {
-                // Admins and clients see all restaurants
                 restaurants = restaurantDAO.getAllRestaurants();
             }
             restaurantsList.clear();
@@ -112,7 +105,6 @@ public class RestaurantsTabController implements Initializable {
 
     @FXML
     private void handleAdd() {
-        // Only administrators can add new restaurants
         if (!SessionManager.getInstance().isAdministrator()) {
             AlertHelper.showError("Klaida", "Tik administratoriai gali pridėti naujus restoranus!");
             return;
@@ -148,13 +140,11 @@ public class RestaurantsTabController implements Initializable {
             return;
         }
 
-        // Clients cannot edit restaurants
         if (SessionManager.getInstance().isClient()) {
             AlertHelper.showError("Klaida", "Klientai negali redaguoti restoranų!");
             return;
         }
 
-        // Restaurant owners can only edit their own restaurants
         if (SessionManager.getInstance().isRestaurantOwner() &&
             !selected.getOwnerId().equals(SessionManager.getInstance().getCurrentUser().getId())) {
             AlertHelper.showError("Klaida", "Galite redaguoti tik savo restoraną!");
@@ -186,7 +176,6 @@ public class RestaurantsTabController implements Initializable {
 
     @FXML
     private void handleDelete() {
-        // Only administrators can delete restaurants
         if (!SessionManager.getInstance().isAdministrator()) {
             AlertHelper.showError("Klaida", "Tik administratoriai gali ištrinti restoranus!");
             return;

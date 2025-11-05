@@ -67,7 +67,6 @@ public class OrderViewDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Setup table columns
         itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemName"));
         itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         itemQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -85,7 +84,6 @@ public class OrderViewDialogController implements Initializable {
         createdLabel.setText(order.getCreatedAt().format(dateFormatter));
         totalLabel.setText(String.format("%.2f €", order.getTotalAmount()));
 
-        // Load order items
         List<OrderItem> items = orderItemDAO.getOrderItemsByOrderId(order.getId());
         orderItemsTable.setItems(FXCollections.observableArrayList(items));
     }

@@ -11,15 +11,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class OrderItem {
     private Integer id;
-    private Integer orderId; // Foreign key to Order
-    private Integer menuItemId; // Foreign key to MenuItem
+    private Integer orderId;
+    private Integer menuItemId;
     private String menuItemName;
     private BigDecimal price;
     private Integer quantity;
     private BigDecimal subtotal;
     private String notes;
 
-    // Additional field for display
     private String menuItemDescription;
 
     public OrderItem(Integer orderId, Integer menuItemId, String menuItemName, BigDecimal price, Integer quantity) {

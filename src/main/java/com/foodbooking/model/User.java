@@ -21,8 +21,7 @@ public class User {
     private LocalDateTime updatedAt;
     private boolean active;
 
-    // Additional field for restaurant owners
-    private Integer restaurantId; // Nullable, used only for restaurant owners
+    private Integer restaurantId;
 
     public User(String username, String password, String email, String fullName, String phoneNumber, UserRole role) {
         this.username = username;

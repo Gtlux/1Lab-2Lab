@@ -11,14 +11,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Message {
     private Integer id;
-    private Integer orderId; // Foreign key to Order
-    private Integer senderId; // Foreign key to User
-    private Integer receiverId; // Foreign key to User
+    private Integer orderId;
+    private Integer senderId;
+    private Integer receiverId;
     private String content;
     private LocalDateTime sentAt;
     private boolean isRead;
 
-    // Additional fields for display
     private String senderName;
     private String receiverName;
 

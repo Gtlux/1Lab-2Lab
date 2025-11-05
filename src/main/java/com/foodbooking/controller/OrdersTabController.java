@@ -85,7 +85,6 @@ public class OrdersTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         clientColumn.setCellValueFactory(new PropertyValueFactory<>("clientName"));
         restaurantColumn.setCellValueFactory(new PropertyValueFactory<>("restaurantName"));
@@ -95,9 +94,7 @@ public class OrdersTabController implements Initializable {
         deliveryAddressColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryAddress"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
 
-        // Configure buttons based on user role
         if (SessionManager.getInstance().isClient()) {
-            // Clients can create orders and request cancellation, but cannot delete
             deleteButton.setVisible(false);
             deleteButton.setManaged(false);
             changeStatusButton.setVisible(false);
@@ -107,7 +104,6 @@ public class OrdersTabController implements Initializable {
             requestCancellationButton.setVisible(true);
             requestCancellationButton.setManaged(true);
         } else if (SessionManager.getInstance().isRestaurantOwner() || SessionManager.getInstance().isAdministrator()) {
-            // Restaurant owners and admins can assign drivers
             addButton.setVisible(false);
             addButton.setManaged(false);
             requestCancellationButton.setVisible(false);
@@ -115,7 +111,6 @@ public class OrdersTabController implements Initializable {
             assignDriverButton.setVisible(true);
             assignDriverButton.setManaged(true);
         } else {
-            // Drivers cannot create orders or assign drivers
             addButton.setVisible(false);
             addButton.setManaged(false);
             requestCancellationButton.setVisible(false);
@@ -124,7 +119,6 @@ public class OrdersTabController implements Initializable {
             assignDriverButton.setManaged(false);
         }
 
-        // Load data
         loadOrders();
     }
 
@@ -133,21 +127,17 @@ public class OrdersTabController implements Initializable {
             List<Order> orders = new ArrayList<>();
 
             if (SessionManager.getInstance().isClient()) {
-                // Clients see their own orders
                 orders = orderDAO.getOrdersByClientId(SessionManager.getInstance().getCurrentUser().getId());
             } else if (SessionManager.getInstance().isRestaurantOwner()) {
-                // Restaurant owners see orders for their restaurants
                 List<Restaurant> ownRestaurants = restaurantDAO.getRestaurantsByOwnerId(
                         SessionManager.getInstance().getCurrentUser().getId());
                 for (Restaurant restaurant : ownRestaurants) {
                     orders.addAll(orderDAO.getOrdersByRestaurantId(restaurant.getId()));
                 }
             } else if (SessionManager.getInstance().isDriver()) {
-                // Drivers see available orders and their assigned orders
                 orders.addAll(orderDAO.getAvailableOrdersForDrivers());
                 orders.addAll(orderDAO.getOrdersByDriverId(SessionManager.getInstance().getCurrentUser().getId()));
             } else if (SessionManager.getInstance().isAdministrator()) {
-                // Admins see all orders
                 orders = orderDAO.getAllOrders();
             }
 
@@ -162,7 +152,6 @@ public class OrdersTabController implements Initializable {
 
     @FXML
     private void handleAdd() {
-        // Only clients and admins can create orders
         if (!SessionManager.getInstance().isClient() && !SessionManager.getInstance().isAdministrator()) {
             AlertHelper.showError("Klaida", "Tik klientai gali kurti užsakymus!");
             return;
@@ -223,7 +212,6 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Check permissions
         if (SessionManager.getInstance().isClient() &&
             !selected.getClientId().equals(SessionManager.getInstance().getCurrentUser().getId())) {
             AlertHelper.showError("Klaida", "Galite keisti tik savo užsakymų statusą!");
@@ -239,14 +227,12 @@ public class OrdersTabController implements Initializable {
             }
         }
 
-        // Show status change dialog
         ChoiceDialog<OrderStatus> dialog = new ChoiceDialog<>(selected.getStatus(), OrderStatus.values());
         dialog.setTitle("Keisti užsakymo statusą");
         dialog.setHeaderText("Pasirinkite naują statusą");
         dialog.setContentText("Statusas:");
 
         dialog.showAndWait().ifPresent(newStatus -> {
-            // Handle driver assignment
             if (newStatus == OrderStatus.PICKED_UP && SessionManager.getInstance().isDriver()) {
                 if (orderDAO.assignDriver(selected.getId(), SessionManager.getInstance().getCurrentUser().getId())) {
                     AlertHelper.showSuccess("Sėkmė", "Užsakymas priskirtas jums!");
@@ -274,11 +260,8 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Permission checks
         if (SessionManager.getInstance().isAdministrator()) {
-            // Admins can delete any order
         } else if (SessionManager.getInstance().isRestaurantOwner()) {
-            // Restaurant owners can only delete CANCELLED orders from their restaurants
             if (selected.getStatus() != OrderStatus.CANCELLED) {
                 AlertHelper.showError("Klaida",
                     "Galite trinti tik atšauktus užsakymus!\n\n" +
@@ -286,7 +269,6 @@ public class OrdersTabController implements Initializable {
                 return;
             }
 
-            // Check if order belongs to owner's restaurant
             Restaurant restaurant = restaurantDAO.getRestaurantById(selected.getRestaurantId());
             if (restaurant == null || !restaurant.getOwnerId().equals(
                     SessionManager.getInstance().getCurrentUser().getId())) {
@@ -294,7 +276,6 @@ public class OrdersTabController implements Initializable {
                 return;
             }
         } else {
-            // Clients and drivers cannot delete orders
             AlertHelper.showError("Klaida", "Neturite teisės trinti užsakymų!");
             return;
         }
@@ -324,20 +305,17 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Only clients can request cancellation of their own orders
         if (!SessionManager.getInstance().isClient() ||
             !selected.getClientId().equals(SessionManager.getInstance().getCurrentUser().getId())) {
             AlertHelper.showError("Klaida", "Galite atšaukti tik savo užsakymus!");
             return;
         }
 
-        // Cannot cancel already delivered or cancelled orders
         if (selected.getStatus() == OrderStatus.DELIVERED || selected.getStatus() == OrderStatus.CANCELLED) {
             AlertHelper.showError("Klaida", "Negalima atšaukti jau pristatyto arba atšaukto užsakymo!");
             return;
         }
 
-        // Check if there's already a pending cancellation request
         CancellationRequest existingRequest = cancellationRequestDAO.getCancellationRequestByOrderId(selected.getId());
         if (existingRequest != null && existingRequest.getStatus() == CancellationRequest.CancellationStatus.PENDING) {
             AlertHelper.showWarning("Įspėjimas",
@@ -346,7 +324,6 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Show cancellation reason dialog
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Atšaukimo užklausa");
         dialog.setHeaderText("Prašome nurodyti atšaukimo priežastį");
@@ -358,7 +335,6 @@ public class OrdersTabController implements Initializable {
                 return;
             }
 
-            // Create confirmation dialog
             String confirmMessage = String.format(
                 "Ar tikrai norite pateikti užsakymo #%d atšaukimo užklausą?\n\n" +
                 "Priežastis: %s\n\n" +
@@ -367,7 +343,6 @@ public class OrdersTabController implements Initializable {
             );
 
             if (AlertHelper.showConfirmation("Patvirtinimas", confirmMessage)) {
-                // Create cancellation request
                 CancellationRequest request = new CancellationRequest(
                     selected.getId(),
                     SessionManager.getInstance().getCurrentUser().getId(),
@@ -397,20 +372,17 @@ public class OrdersTabController implements Initializable {
             return;
         }
 
-        // Check if order status allows driver assignment
         if (selected.getStatus() == OrderStatus.CANCELLED || selected.getStatus() == OrderStatus.DELIVERED) {
             AlertHelper.showError("Klaida", "Negalima priskirti vairuotojo atšauktam arba pristatytam užsakymui!");
             return;
         }
 
-        // Get all drivers
         List<User> drivers = userDAO.getUsersByRole(UserRole.DRIVER);
         if (drivers.isEmpty()) {
             AlertHelper.showError("Klaida", "Sistemoje nėra registruotų vairuotojų!");
             return;
         }
 
-        // Create a map of display names to drivers
         java.util.Map<String, User> driverMap = new java.util.HashMap<>();
         List<String> driverNames = new java.util.ArrayList<>();
         for (User driver : drivers) {
@@ -419,7 +391,6 @@ public class OrdersTabController implements Initializable {
             driverNames.add(displayName);
         }
 
-        // Create choice dialog with driver names
         ChoiceDialog<String> dialog = new ChoiceDialog<>(null, driverNames);
         dialog.setTitle("Priskirti vairuotoją");
         dialog.setHeaderText(String.format("Priskirti vairuotoją užsakymui #%d\n\nRestoranas: %s\nAdresas: %s",
@@ -435,9 +406,7 @@ public class OrdersTabController implements Initializable {
                 return;
             }
 
-            // Assign driver to order
             if (orderDAO.assignDriver(selected.getId(), driver.getId())) {
-                // Update status to PICKED_UP or READY based on current status
                 OrderStatus newStatus = selected.getStatus() == OrderStatus.PENDING ? OrderStatus.CONFIRMED : OrderStatus.READY;
                 selected.updateStatus(newStatus);
                 orderDAO.updateOrder(selected);

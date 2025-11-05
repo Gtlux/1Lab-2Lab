@@ -9,7 +9,6 @@ import java.util.List;
 
 public class MenuItemDAO {
 
-    // CREATE
     public boolean createMenuItem(MenuItem menuItem) {
         String sql = "INSERT INTO menu_items (restaurant_id, name, description, price, category, available, image_url) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -42,7 +41,6 @@ public class MenuItemDAO {
         return false;
     }
 
-    // READ - Get by ID
     public MenuItem getMenuItemById(int id) {
         String sql = "SELECT * FROM menu_items WHERE id = ?";
 
@@ -62,7 +60,6 @@ public class MenuItemDAO {
         return null;
     }
 
-    // READ - Get all menu items
     public List<MenuItem> getAllMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
         String sql = "SELECT * FROM menu_items ORDER BY restaurant_id, category, name";
@@ -81,7 +78,6 @@ public class MenuItemDAO {
         return menuItems;
     }
 
-    // READ - Get by restaurant ID
     public List<MenuItem> getMenuItemsByRestaurantId(int restaurantId) {
         List<MenuItem> menuItems = new ArrayList<>();
         String sql = "SELECT * FROM menu_items WHERE restaurant_id = ? ORDER BY category, name";
@@ -102,7 +98,6 @@ public class MenuItemDAO {
         return menuItems;
     }
 
-    // READ - Get available items by restaurant ID
     public List<MenuItem> getAvailableMenuItems(int restaurantId) {
         List<MenuItem> menuItems = new ArrayList<>();
         String sql = "SELECT * FROM menu_items WHERE restaurant_id = ? AND available = true ORDER BY category, name";
@@ -123,7 +118,6 @@ public class MenuItemDAO {
         return menuItems;
     }
 
-    // UPDATE
     public boolean updateMenuItem(MenuItem menuItem) {
         String sql = "UPDATE menu_items SET restaurant_id = ?, name = ?, description = ?, price = ?, " +
                      "category = ?, available = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
@@ -148,7 +142,6 @@ public class MenuItemDAO {
         return false;
     }
 
-    // DELETE
     public boolean deleteMenuItem(int id) {
         String sql = "DELETE FROM menu_items WHERE id = ?";
 
@@ -164,7 +157,6 @@ public class MenuItemDAO {
         return false;
     }
 
-    // Helper method
     private MenuItem extractMenuItemFromResultSet(ResultSet rs) throws SQLException {
         MenuItem menuItem = new MenuItem();
         menuItem.setId(rs.getInt("id"));
