@@ -34,6 +34,7 @@ public class ClientActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
     private Button logoutButton;
+    private Button cartButton;
 
     private int userId;
     private String userName;
@@ -53,6 +54,7 @@ public class ClientActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         recyclerView = findViewById(R.id.recyclerView);
         logoutButton = findViewById(R.id.logoutButton);
+        cartButton = findViewById(R.id.cartButton);
 
         welcomeTextView.setText("Sveiki, " + userName + "!");
 
@@ -82,6 +84,15 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        cartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ClientActivity.this, ShoppingCartActivity.class);
+                intent.putExtra("clientId", userId);
+                startActivity(intent);
             }
         });
 
@@ -149,6 +160,16 @@ public class ClientActivity extends AppCompatActivity {
             holder.nameText.setText(restaurant.getName());
             holder.addressText.setText(restaurant.getAddress());
             holder.phoneText.setText(restaurant.getPhoneNumber());
+
+            holder.viewMenuButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ClientActivity.this, MenuActivity.class);
+                    intent.putExtra("restaurantId", restaurant.getId());
+                    intent.putExtra("restaurantName", restaurant.getName());
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -159,12 +180,14 @@ public class ClientActivity extends AppCompatActivity {
 
     static class RestaurantViewHolder extends RecyclerView.ViewHolder {
         TextView nameText, addressText, phoneText;
+        Button viewMenuButton;
 
         RestaurantViewHolder(View itemView) {
             super(itemView);
             nameText = itemView.findViewById(R.id.restaurantName);
             addressText = itemView.findViewById(R.id.restaurantAddress);
             phoneText = itemView.findViewById(R.id.restaurantPhone);
+            viewMenuButton = itemView.findViewById(R.id.viewMenuButton);
         }
     }
 

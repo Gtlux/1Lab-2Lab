@@ -30,6 +30,20 @@
         <activity
             android:name=".activities.DriverActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ShoppingCartActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.ClientActivity" />
+
+        <activity
+            android:name=".activities.MenuActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.ClientActivity" />
     </application>
 
 </manifest>

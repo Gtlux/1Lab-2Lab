@@ -10,6 +10,9 @@ public interface ApiService {
     @POST("api/auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
 
+    @POST("api/auth/register")
+    Call<LoginResponse> register(@Body RegisterRequest request);
+
     @GET("api/client/restaurants")
     Call<ApiResponse<List<Restaurant>>> getRestaurants();
 
@@ -18,6 +21,9 @@ public interface ApiService {
 
     @GET("api/client/orders/{clientId}")
     Call<ApiResponse<List<Order>>> getClientOrders(@Path("clientId") int clientId);
+
+    @POST("api/client/orders")
+    Call<ApiResponse<Order>> createOrder(@Body CreateOrderRequest request);
 
     @GET("api/driver/orders/{driverId}")
     Call<ApiResponse<List<Order>>> getDriverOrders(@Path("driverId") int driverId);

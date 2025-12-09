@@ -4,15 +4,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kliento Sąsaja"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:padding="16dp"
+        android:orientation="horizontal"
         android:background="#3498db"
-        android:textColor="#ffffff"/>
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Kliento Sąsaja"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#ffffff"/>
+
+        <Button
+            android:id="@+id/cartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🛒 Krepšelis"
+            android:backgroundTint="#27ae60"
+            android:textColor="#ffffff"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/welcomeTextView"

@@ -41,6 +41,14 @@
             android:textColor="#7f8c8d"
             android:layout_marginTop="4dp"/>
 
+        <Button
+            android:id="@+id/viewMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Žiūrėti meniu"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#3498db"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
