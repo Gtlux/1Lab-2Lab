@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -54,8 +55,24 @@ public class UsersTabController implements Initializable {
     @FXML
     private ComboBox<UserRole> roleFilterComboBox;
 
+    @FXML
+    private TextField usernameFilterField;
+
+    @FXML
+    private TextField emailFilterField;
+
+    @FXML
+    private TextField fullNameFilterField;
+
+    @FXML
+    private ComboBox<String> activeFilterComboBox;
+
+    @FXML
+    private Label filterResultLabel;
+
     private UserDAO userDAO = new UserDAO();
     private ObservableList<User> usersList = FXCollections.observableArrayList();
+    private List<User> allUsers = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,16 +86,18 @@ public class UsersTabController implements Initializable {
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
 
         roleFilterComboBox.getItems().addAll(UserRole.values());
+        activeFilterComboBox.getItems().addAll("Visos", "Aktyvūs", "Neaktyvūs");
 
         loadUsers();
     }
 
     private void loadUsers() {
         try {
-            List<User> users = userDAO.getAllUsers();
+            allUsers = userDAO.getAllUsers();
             usersList.clear();
-            usersList.addAll(users);
+            usersList.addAll(allUsers);
             usersTable.setItems(usersList);
+            filterResultLabel.setText("Rasta: " + usersList.size() + " vartotojų");
         } catch (Exception e) {
             e.printStackTrace();
             AlertHelper.showError("Klaida", "Nepavyko užkrauti vartotojų: " + e.getMessage());
@@ -176,26 +195,58 @@ public class UsersTabController implements Initializable {
 
     @FXML
     private void handleFilter() {
-        UserRole selectedRole = roleFilterComboBox.getValue();
-        if (selectedRole == null) {
-            AlertHelper.showWarning("Įspėjimas", "Pasirinkite rolę filtravimui!");
-            return;
+        String usernameFilter = usernameFilterField.getText().trim().toLowerCase();
+        String emailFilter = emailFilterField.getText().trim().toLowerCase();
+        String fullNameFilter = fullNameFilterField.getText().trim().toLowerCase();
+        UserRole roleFilter = roleFilterComboBox.getValue();
+        String activeFilter = activeFilterComboBox.getValue();
+
+        List<User> filtered = new ArrayList<>(allUsers);
+
+        if (!usernameFilter.isEmpty()) {
+            filtered = filtered.stream()
+                    .filter(u -> u.getUsername().toLowerCase().contains(usernameFilter))
+                    .collect(java.util.stream.Collectors.toList());
         }
 
-        try {
-            List<User> users = userDAO.getUsersByRole(selectedRole);
-            usersList.clear();
-            usersList.addAll(users);
-            usersTable.setItems(usersList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            AlertHelper.showError("Klaida", "Filtravimo klaida: " + e.getMessage());
+        if (!emailFilter.isEmpty()) {
+            filtered = filtered.stream()
+                    .filter(u -> u.getEmail() != null && u.getEmail().toLowerCase().contains(emailFilter))
+                    .collect(java.util.stream.Collectors.toList());
         }
+
+        if (!fullNameFilter.isEmpty()) {
+            filtered = filtered.stream()
+                    .filter(u -> u.getFullName().toLowerCase().contains(fullNameFilter))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        if (roleFilter != null) {
+            filtered = filtered.stream()
+                    .filter(u -> u.getRole() == roleFilter)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        if (activeFilter != null && !"Visos".equals(activeFilter)) {
+            boolean isActive = "Aktyvūs".equals(activeFilter);
+            filtered = filtered.stream()
+                    .filter(u -> u.isActive() == isActive)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        usersList.clear();
+        usersList.addAll(filtered);
+        usersTable.setItems(usersList);
+        filterResultLabel.setText("Rasta: " + filtered.size() + " vartotojų (iš " + allUsers.size() + ")");
     }
 
     @FXML
     private void handleClearFilter() {
+        usernameFilterField.clear();
+        emailFilterField.clear();
+        fullNameFilterField.clear();
         roleFilterComboBox.setValue(null);
+        activeFilterComboBox.setValue(null);
         loadUsers();
     }
 }

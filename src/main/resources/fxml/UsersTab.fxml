@@ -20,12 +20,28 @@
     </HBox>
 
     <!-- Filter Section -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Filtruoti pagal rolę:"/>
-        <ComboBox fx:id="roleFilterComboBox" promptText="Visos rolės" prefWidth="150"/>
-        <Button text="Taikyti filtrą" onAction="#handleFilter" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
-        <Button text="Išvalyti filtrą" onAction="#handleClearFilter" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
-    </HBox>
+    <VBox spacing="5">
+        <Label text="Filtravimas (4+ požymiai):" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Username:"/>
+            <TextField fx:id="usernameFilterField" promptText="Vartotojo vardas" prefWidth="150"/>
+            <Label text="El. paštas:"/>
+            <TextField fx:id="emailFilterField" promptText="El. paštas" prefWidth="150"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Vardas:"/>
+            <TextField fx:id="fullNameFilterField" promptText="Pilnas vardas" prefWidth="150"/>
+            <Label text="Rolė:"/>
+            <ComboBox fx:id="roleFilterComboBox" promptText="Visos rolės" prefWidth="150"/>
+            <Label text="Būsena:"/>
+            <ComboBox fx:id="activeFilterComboBox" promptText="Visos" prefWidth="100"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Taikyti filtrą" onAction="#handleFilter" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Button text="Išvalyti filtrą" onAction="#handleClearFilter" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+            <Label fx:id="filterResultLabel" text="" style="-fx-text-fill: #4CAF50; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
 
     <!-- Table -->
     <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">

@@ -22,6 +22,30 @@
         <Button text="Atnaujinti" onAction="#handleRefresh" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
     </HBox>
 
+    <!-- Filter Section -->
+    <VBox spacing="5">
+        <Label text="Filtravimas (Status, Laikas, Klientas, Restoranas):" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Statusas:"/>
+            <ComboBox fx:id="statusFilterComboBox" promptText="Visi statusai" prefWidth="150"/>
+            <Label text="Restoranas:"/>
+            <ComboBox fx:id="restaurantFilterComboBox" promptText="Visi restoranai" prefWidth="150"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Klientas (vardas):"/>
+            <TextField fx:id="clientNameFilterField" promptText="Kliento vardas" prefWidth="150"/>
+            <Label text="Data nuo:"/>
+            <DatePicker fx:id="dateFromPicker" prefWidth="150"/>
+            <Label text="Data iki:"/>
+            <DatePicker fx:id="dateToPicker" prefWidth="150"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Taikyti filtrą" onAction="#handleFilterOrders" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Button text="Išvalyti filtrą" onAction="#handleClearFilterOrders" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+            <Label fx:id="orderFilterResultLabel" text="" style="-fx-text-fill: #4CAF50; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+
     <!-- Table -->
     <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
         <columns>
