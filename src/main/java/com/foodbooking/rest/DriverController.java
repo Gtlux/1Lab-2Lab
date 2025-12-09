@@ -18,7 +18,7 @@ public class DriverController {
     private DriverService driverService;
 
     @GetMapping("/orders/{driverId}")
-    public ResponseEntity<ApiResponse<List<OrderDTO>>> getAssignedOrders(@PathVariable int driverId) {
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> getAssignedOrders(@PathVariable("driverId") int driverId) {
         List<OrderDTO> orders = driverService.getAssignedOrders(driverId);
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
@@ -30,7 +30,7 @@ public class DriverController {
     }
 
     @GetMapping("/orders/detail/{orderId}")
-    public ResponseEntity<ApiResponse<OrderDTO>> getOrderById(@PathVariable int orderId) {
+    public ResponseEntity<ApiResponse<OrderDTO>> getOrderById(@PathVariable("orderId") int orderId) {
         OrderDTO order = driverService.getOrderById(orderId);
         if (order != null) {
             return ResponseEntity.ok(ApiResponse.success(order));
@@ -41,8 +41,8 @@ public class DriverController {
 
     @PutMapping("/orders/{orderId}/status")
     public ResponseEntity<ApiResponse<String>> updateOrderStatus(
-            @PathVariable int orderId,
-            @RequestParam String status) {
+            @PathVariable("orderId") int orderId,
+            @RequestParam("status") String status) {
         try {
             OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
             boolean success = driverService.updateOrderStatus(orderId, orderStatus);
@@ -62,8 +62,8 @@ public class DriverController {
 
     @PostMapping("/orders/{orderId}/accept")
     public ResponseEntity<ApiResponse<String>> acceptOrder(
-            @PathVariable int orderId,
-            @RequestParam int driverId) {
+            @PathVariable("orderId") int orderId,
+            @RequestParam("driverId") int driverId) {
         boolean success = driverService.acceptOrder(orderId, driverId);
 
         if (success) {

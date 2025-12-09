@@ -22,7 +22,7 @@ public class ClientController {
     }
 
     @GetMapping("/restaurants/{id}")
-    public ResponseEntity<ApiResponse<RestaurantDTO>> getRestaurantById(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<RestaurantDTO>> getRestaurantById(@PathVariable("id") int id) {
         RestaurantDTO restaurant = clientService.getRestaurantById(id);
         if (restaurant != null) {
             return ResponseEntity.ok(ApiResponse.success(restaurant));
@@ -39,7 +39,7 @@ public class ClientController {
 
     @GetMapping("/menu/restaurant/{restaurantId}")
     public ResponseEntity<ApiResponse<List<MenuItemDTO>>> getMenuByRestaurant(
-            @PathVariable int restaurantId) {
+            @PathVariable("restaurantId") int restaurantId) {
         List<MenuItemDTO> menuItems = clientService.getMenuItemsByRestaurant(restaurantId);
         return ResponseEntity.ok(ApiResponse.success(menuItems));
     }
@@ -56,13 +56,13 @@ public class ClientController {
     }
 
     @GetMapping("/orders/{clientId}")
-    public ResponseEntity<ApiResponse<List<OrderDTO>>> getClientOrders(@PathVariable int clientId) {
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> getClientOrders(@PathVariable("clientId") int clientId) {
         List<OrderDTO> orders = clientService.getClientOrders(clientId);
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @GetMapping("/orders/detail/{orderId}")
-    public ResponseEntity<ApiResponse<OrderDTO>> getOrderById(@PathVariable int orderId) {
+    public ResponseEntity<ApiResponse<OrderDTO>> getOrderById(@PathVariable("orderId") int orderId) {
         OrderDTO order = clientService.getOrderById(orderId);
         if (order != null) {
             return ResponseEntity.ok(ApiResponse.success(order));
@@ -73,9 +73,9 @@ public class ClientController {
 
     @PostMapping("/orders/{orderId}/cancel")
     public ResponseEntity<ApiResponse<CancellationRequestDTO>> requestCancellation(
-            @PathVariable int orderId,
-            @RequestParam int clientId,
-            @RequestParam String reason) {
+            @PathVariable("orderId") int orderId,
+            @RequestParam("clientId") int clientId,
+            @RequestParam("reason") String reason) {
         CancellationRequestDTO request = clientService.requestCancellation(orderId, clientId, reason);
         if (request != null) {
             return ResponseEntity.ok(
