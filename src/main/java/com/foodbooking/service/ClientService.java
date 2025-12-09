@@ -5,6 +5,8 @@ import com.foodbooking.dto.*;
 import com.foodbooking.model.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,15 +64,22 @@ public class ClientService {
         }
 
         int orderId = order.getId();
+        boolean isPeakHour = isPeakHour();
+        BigDecimal peakMultiplier = new BigDecimal("1.20");
 
         for (CreateOrderRequest.OrderItemRequest itemRequest : request.getItems()) {
             MenuItem menuItem = menuItemDAO.getMenuItemById(itemRequest.getMenuItemId());
             if (menuItem != null) {
+                BigDecimal price = menuItem.getPrice();
+                if (isPeakHour) {
+                    price = price.multiply(peakMultiplier);
+                }
+
                 OrderItem orderItem = new OrderItem(
                         orderId,
                         menuItem.getId(),
                         menuItem.getName(),
-                        menuItem.getPrice(),
+                        price,
                         itemRequest.getQuantity()
                 );
                 orderItemDAO.createOrderItem(orderItem);
@@ -79,6 +88,17 @@ public class ClientService {
 
         order = orderDAO.getOrderById(orderId);
         return OrderDTO.fromOrder(order);
+    }
+
+    private boolean isPeakHour() {
+        LocalTime now = LocalTime.now();
+        LocalTime lunchStart = LocalTime.of(11, 0);
+        LocalTime lunchEnd = LocalTime.of(14, 0);
+        LocalTime dinnerStart = LocalTime.of(18, 0);
+        LocalTime dinnerEnd = LocalTime.of(21, 0);
+
+        return (now.isAfter(lunchStart) && now.isBefore(lunchEnd)) ||
+               (now.isAfter(dinnerStart) && now.isBefore(dinnerEnd));
     }
 
     public List<OrderDTO> getClientOrders(int clientId) {
