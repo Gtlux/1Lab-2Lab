@@ -32,6 +32,22 @@ public class OrderDTO {
     private List<OrderItemDTO> orderItems;
 
     public static OrderDTO fromOrder(Order order) {
+        if (order == null) {
+            return null;
+        }
+
+        List<OrderItemDTO> orderItemDTOs = null;
+        if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
+            try {
+                orderItemDTOs = order.getOrderItems().stream()
+                        .map(OrderItemDTO::fromOrderItem)
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                System.err.println("Error converting order items for order " + order.getId() + ": " + e.getMessage());
+                orderItemDTOs = List.of();
+            }
+        }
+
         return new OrderDTO(
                 order.getId(),
                 order.getClientId(),
@@ -46,10 +62,7 @@ public class OrderDTO {
                 order.getNotes(),
                 order.getCreatedAt(),
                 order.getDeliveredAt(),
-                order.getOrderItems() != null ?
-                    order.getOrderItems().stream()
-                        .map(OrderItemDTO::fromOrderItem)
-                        .collect(Collectors.toList()) : null
+                orderItemDTOs
         );
     }
 }

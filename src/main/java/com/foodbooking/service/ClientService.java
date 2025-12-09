@@ -38,9 +38,15 @@ public class ClientService {
     }
 
     public List<MenuItemDTO> getMenuItemsByRestaurant(int restaurantId) {
-        return menuItemDAO.getMenuItemsByRestaurantId(restaurantId).stream()
-                .map(MenuItemDTO::fromMenuItem)
-                .collect(Collectors.toList());
+        try {
+            return menuItemDAO.getMenuItemsByRestaurantId(restaurantId).stream()
+                    .map(MenuItemDTO::fromMenuItem)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error getting menu items for restaurant " + restaurantId + ": " + e.getMessage());
+            e.printStackTrace();
+            return List.of(); // Return empty list instead of null
+        }
     }
 
     public List<MenuItemDTO> getAllAvailableMenuItems() {
@@ -102,9 +108,29 @@ public class ClientService {
     }
 
     public List<OrderDTO> getClientOrders(int clientId) {
-        return orderDAO.getOrdersByClientId(clientId).stream()
-                .map(OrderDTO::fromOrder)
-                .collect(Collectors.toList());
+        try {
+            List<Order> orders = orderDAO.getOrdersByClientId(clientId);
+            return orders.stream()
+                    .map(order -> {
+                        try {
+                            // Ensure orderItems is not null
+                            if (order.getOrderItems() == null) {
+                                order.setOrderItems(List.of());
+                            }
+                            return OrderDTO.fromOrder(order);
+                        } catch (Exception e) {
+                            System.err.println("Error converting order " + order.getId() + ": " + e.getMessage());
+                            e.printStackTrace();
+                            return null;
+                        }
+                    })
+                    .filter(dto -> dto != null)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error getting orders for client " + clientId + ": " + e.getMessage());
+            e.printStackTrace();
+            return List.of(); // Return empty list instead of null
+        }
     }
 
     public OrderDTO getOrderById(int orderId) {
