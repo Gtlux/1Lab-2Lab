@@ -57,6 +57,10 @@ public class ClientService {
     }
 
     public OrderDTO createOrder(CreateOrderRequest request) {
+        System.out.println("Creating order - ClientId: " + request.getClientId() +
+                           ", RestaurantId: " + request.getRestaurantId() +
+                           ", Items count: " + (request.getItems() != null ? request.getItems().size() : 0));
+
         Order order = new Order(
                 request.getClientId(),
                 request.getRestaurantId(),

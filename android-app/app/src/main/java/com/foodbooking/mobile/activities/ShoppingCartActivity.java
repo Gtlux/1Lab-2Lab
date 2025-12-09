@@ -40,7 +40,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
-        clientId = getIntent().getIntExtra("userId", 0);
+        clientId = getIntent().getIntExtra("clientId", 0);
         cart = ShoppingCart.getInstance();
 
         restaurantNameText = findViewById(R.id.restaurantNameText);
