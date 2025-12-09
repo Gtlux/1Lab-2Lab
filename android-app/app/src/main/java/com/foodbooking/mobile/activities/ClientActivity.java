@@ -106,7 +106,20 @@ public class ClientActivity extends AppCompatActivity {
                                    Response<ApiResponse<List<Restaurant>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     restaurants = response.body().getData();
-                    recyclerView.setAdapter(new RestaurantAdapter(restaurants));
+                    if (restaurants != null && !restaurants.isEmpty()) {
+                        recyclerView.setAdapter(new RestaurantAdapter(restaurants));
+                        Toast.makeText(ClientActivity.this,
+                                "Užkrauta " + restaurants.size() + " restoranų",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ClientActivity.this,
+                                "Restoranų sąrašas tuščias",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(ClientActivity.this,
+                            "Klaida: " + response.code() + " " + response.message(),
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -114,7 +127,8 @@ public class ClientActivity extends AppCompatActivity {
             public void onFailure(Call<ApiResponse<List<Restaurant>>> call, Throwable t) {
                 Toast.makeText(ClientActivity.this,
                         "Nepavyko užkrauti restoranų: " + t.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_LONG).show();
+                t.printStackTrace();
             }
         });
     }
@@ -126,7 +140,21 @@ public class ClientActivity extends AppCompatActivity {
                                    Response<ApiResponse<List<Order>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     orders = response.body().getData();
-                    recyclerView.setAdapter(new OrderAdapter(orders));
+                    if (orders != null && !orders.isEmpty()) {
+                        recyclerView.setAdapter(new OrderAdapter(orders));
+                        Toast.makeText(ClientActivity.this,
+                                "Užkrauta " + orders.size() + " užsakymų",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        recyclerView.setAdapter(new OrderAdapter(new ArrayList<>()));
+                        Toast.makeText(ClientActivity.this,
+                                "Užsakymų sąrašas tuščias",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(ClientActivity.this,
+                            "Klaida: " + response.code() + " " + response.message(),
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -134,7 +162,8 @@ public class ClientActivity extends AppCompatActivity {
             public void onFailure(Call<ApiResponse<List<Order>>> call, Throwable t) {
                 Toast.makeText(ClientActivity.this,
                         "Nepavyko užkrauti užsakymų: " + t.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_LONG).show();
+                t.printStackTrace();
             }
         });
     }

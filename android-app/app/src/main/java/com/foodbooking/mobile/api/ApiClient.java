@@ -6,6 +6,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
+    // For Emulator: http://10.0.2.2:8080/
+    // For Physical Device: http://YOUR_COMPUTER_IP:8080/ (e.g., http://192.168.1.105:8080/)
     private static final String BASE_URL = "http://10.0.2.2:8080/";
     private static Retrofit retrofit = null;
 
