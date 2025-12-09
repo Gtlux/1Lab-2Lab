@@ -49,9 +49,8 @@ public class AuthService {
                 request.getRole()
         );
 
-        int userId = userDAO.createUser(user);
-        if (userId > 0) {
-            user.setId(userId);
+        boolean created = userDAO.createUser(user);
+        if (created) {
             UserDTO userDTO = UserDTO.fromUser(user);
             return new LoginResponse(true, "Registracija sėkminga", userDTO);
         }
