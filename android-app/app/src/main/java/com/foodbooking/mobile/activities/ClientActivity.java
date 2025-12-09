@@ -50,6 +50,9 @@ public class ClientActivity extends AppCompatActivity {
         userId = getIntent().getIntExtra("userId", 0);
         userName = getIntent().getStringExtra("userName");
 
+        // Debug logging
+        android.util.Log.d("ClientActivity", "Logged in with userId: " + userId + ", userName: " + userName);
+
         welcomeTextView = findViewById(R.id.welcomeTextView);
         tabLayout = findViewById(R.id.tabLayout);
         recyclerView = findViewById(R.id.recyclerView);

@@ -112,6 +112,12 @@ public class ShoppingCartActivity extends AppCompatActivity {
         }
         request.setItems(items);
 
+        // Debug logging
+        android.util.Log.d("ShoppingCart", "Creating order - ClientId: " + clientId +
+                ", RestaurantId: " + cart.getRestaurant().getId() +
+                ", Items: " + items.size());
+        Toast.makeText(this, "Siunčiamas užsakymas su Client ID: " + clientId, Toast.LENGTH_SHORT).show();
+
         checkoutButton.setEnabled(false);
         checkoutButton.setText("Kuriamas užsakymas...");
 
