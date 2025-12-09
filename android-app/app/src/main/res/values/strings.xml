@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Food Booking</string>
+    <string name="login">Prisijungti</string>
+    <string name="username">Vartotojo vardas</string>
+    <string name="password">Slaptažodis</string>
+    <string name="client_interface">Kliento Sąsaja</string>
+    <string name="driver_interface">Vairuotojo Sąsaja</string>
+    <string name="restaurants">Restoranai</string>
+    <string name="my_orders">Mano užsakymai</string>
+    <string name="logout">Atsijungti</string>
+    <string name="refresh">Atnaujinti</string>
+</resources>

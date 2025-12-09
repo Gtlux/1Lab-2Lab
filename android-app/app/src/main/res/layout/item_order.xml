@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="8dp"
+    card_view:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/orderIdText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Užsakymas #123"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2c3e50"/>
+
+        <TextView
+            android:id="@+id/restaurantText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Restoranas: Name"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/addressText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Adresas: Address"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Būsena: PENDING"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#3498db"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/totalText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Suma: €20.00"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#27ae60"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/updateStatusButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Atnaujinti Būseną"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
