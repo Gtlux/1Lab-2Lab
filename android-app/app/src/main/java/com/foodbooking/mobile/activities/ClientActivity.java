@@ -111,6 +111,14 @@ public class ClientActivity extends AppCompatActivity {
         loadRestaurants();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("userId", userId);
+        outState.putString("userName", userName);
+        android.util.Log.d("ClientActivity", "Saving state - userId: " + userId);
+    }
+
     private void loadRestaurants() {
         ApiClient.getApiService().getRestaurants().enqueue(new Callback<ApiResponse<List<Restaurant>>>() {
             @Override
