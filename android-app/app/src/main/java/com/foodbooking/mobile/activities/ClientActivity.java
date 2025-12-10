@@ -47,8 +47,17 @@ public class ClientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        userId = getIntent().getIntExtra("userId", 0);
-        userName = getIntent().getStringExtra("userName");
+        // Restore from savedInstanceState if available (back button case)
+        if (savedInstanceState != null) {
+            userId = savedInstanceState.getInt("userId", 0);
+            userName = savedInstanceState.getString("userName");
+            android.util.Log.d("ClientActivity", "Restored from savedInstanceState - userId: " + userId);
+        } else {
+            // Get from Intent (first time)
+            userId = getIntent().getIntExtra("userId", 0);
+            userName = getIntent().getStringExtra("userName");
+            android.util.Log.d("ClientActivity", "Got from Intent - userId: " + userId);
+        }
 
         // Debug logging
         android.util.Log.d("ClientActivity", "Logged in with userId: " + userId + ", userName: " + userName);
